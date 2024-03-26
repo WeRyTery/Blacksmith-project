@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Vova'sFolder/V_Scenes/MainMenuScene.unity
+    guid: b269e5aca6c89e740bf7274ff6ac70d4
   m_configObjects: {}
