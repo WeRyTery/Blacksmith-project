@@ -8,9 +8,9 @@ using System.Runtime.CompilerServices;
 
 public class E_OrderingLogic : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI dialoguesWindow;
-    [SerializeField] TextMeshProUGUI ordersBook;
-    
+    [SerializeField] TextMeshProUGUI DialoguesText;
+    [SerializeField] TextMeshProUGUI OrdersDescriptionText;
+
     private int commonTextVariationsAmount = 7; // normal and cheeky dialogues variations
     private int rareTextVariationsAmount = 3; // elegant dialogues variations
 
@@ -22,8 +22,13 @@ public class E_OrderingLogic : MonoBehaviour
     private int materialIndexHolder;
     private int[] midWeaponBudgetRange = { 100, 400 };
     private int[] lightWeaponBudgetRange = { 50, 150 };
-    private int finalOrderBudget;
+    
 
+    public static int finalOrderBudget;
+    public static string finalOrderWeaponType;
+    public static string finalOrderMaterial;
+
+    public static List<E_OrdersDescription> ordersList = new List<E_OrdersDescription>();
 
     private string[] normalDialogue =
     {
@@ -61,7 +66,9 @@ public class E_OrderingLogic : MonoBehaviour
     {
         DialogueTypeChooser();
         OrderDescriptionChooser();
+        OrderDescriptionList();
         UpdateUIText();
+        E_EventBus.NewBookOrder?.Invoke();
     }
 
     private void DialogueTypeChooser() // Chooses dialogue that a customer will say
@@ -91,7 +98,10 @@ public class E_OrderingLogic : MonoBehaviour
         weaponTypeIndexHolder = Random.Range(0, 4); // Randomly chooses weapon type
         materialIndexHolder = Random.Range(0, 4); // Randomly chooses material for weapon
 
-        if (weaponTypes[weaponTypeIndexHolder] == "Sword" || weaponTypes[weaponTypeIndexHolder] == "Battle Axe") // Sword and Battle Axe are currently considered as mid priced weapons, the price can be changed in upper variables
+        finalOrderWeaponType = weaponTypes[weaponTypeIndexHolder];
+        finalOrderMaterial = materials[materialIndexHolder];
+
+        if (finalOrderWeaponType == "Sword" || finalOrderWeaponType == "Battle Axe") // Sword and Battle Axe are currently considered as mid priced weapons, the price can be changed in upper variables
         {
             finalOrderBudget = Random.Range(midWeaponBudgetRange[0], midWeaponBudgetRange[1]); // Decides mid budget by using range of 2 values that should be written manualy in upper variables
         }
@@ -100,7 +110,7 @@ public class E_OrderingLogic : MonoBehaviour
             finalOrderBudget = Random.Range(lightWeaponBudgetRange[0], lightWeaponBudgetRange[1]); // Decides cheap budget by using range of 2 values that should be written manualy in upper variables
         }
 
-        switch (materials[materialIndexHolder])
+        switch (finalOrderMaterial)
         {
             case "Iron":
                 finalOrderBudget += 20;
@@ -117,12 +127,19 @@ public class E_OrderingLogic : MonoBehaviour
         }
     }
 
+    private void OrderDescriptionList()
+    {
+        E_OrdersDescription newOrder = new E_OrdersDescription();
+        newOrder.weaponType = finalOrderWeaponType;
+        newOrder.material = finalOrderMaterial;
+        newOrder.budget = finalOrderBudget;
+        ordersList.Add(newOrder);
+    }
+
     private void UpdateUIText()
     {
-        dialoguesWindow.text = finalDialogueText;
+        DialoguesText.text = finalDialogueText;
 
-        ordersBook.text = weaponTypes[weaponTypeIndexHolder] +
-                        "\n\n" + materials[materialIndexHolder] +
-                        "\n\n" + finalOrderBudget + " coins";
+        OrdersDescriptionText.text = finalOrderWeaponType + "\n" + finalOrderMaterial + "\n" + finalOrderBudget;
     }
 }
