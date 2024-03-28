@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class E_OrderDescriptionIndex : MonoBehaviour
 {
-    private TextMeshProUGUI OrdersDescriptionText;
+    [SerializeField] TextMeshProUGUI Weapon;
+    [SerializeField] TextMeshProUGUI Material;
+    [SerializeField] TextMeshProUGUI Budget;
 
     private int orderID = 0;
 
@@ -16,7 +18,9 @@ public class E_OrderDescriptionIndex : MonoBehaviour
 
     private void Start()
     {
-        OrdersDescriptionText = GameObject.FindGameObjectWithTag("OrderDescriptionText").GetComponent<TextMeshProUGUI>();
+        Weapon = GameObject.FindGameObjectWithTag("WeaponText").GetComponent<TextMeshProUGUI>();
+        Material = GameObject.FindGameObjectWithTag("MaterialText").GetComponent<TextMeshProUGUI>();
+        Budget = GameObject.FindGameObjectWithTag("BudgetText").GetComponent<TextMeshProUGUI>();
     }
 
     public int GetOrderIndex()
@@ -35,6 +39,8 @@ public class E_OrderDescriptionIndex : MonoBehaviour
         _material = E_OrderingLogic.ordersList[gameObject.GetComponent<E_OrderDescriptionIndex>().GetOrderIndex()].material;
         _budget = E_OrderingLogic.ordersList[gameObject.GetComponent<E_OrderDescriptionIndex>().GetOrderIndex()].budget;
 
-        OrdersDescriptionText.text = _weaponType + "\n" + _material + "\n" + _budget;
+        Weapon.text = _weaponType;
+        Material.text = _material;
+        Budget.text = _budget.ToString();
     }
 }

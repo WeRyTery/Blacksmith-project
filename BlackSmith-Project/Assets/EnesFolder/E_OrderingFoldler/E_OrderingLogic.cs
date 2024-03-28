@@ -9,7 +9,9 @@ using System.Runtime.CompilerServices;
 public class E_OrderingLogic : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI DialoguesText;
-    [SerializeField] TextMeshProUGUI OrdersDescriptionText;
+    [SerializeField] TextMeshProUGUI Weapon;
+    [SerializeField] TextMeshProUGUI Material;
+    [SerializeField] TextMeshProUGUI Budget;
 
     private int commonTextVariationsAmount = 7; // normal and cheeky dialogues variations
     private int rareTextVariationsAmount = 3; // elegant dialogues variations
@@ -140,6 +142,8 @@ public class E_OrderingLogic : MonoBehaviour
     {
         DialoguesText.text = finalDialogueText;
 
-        OrdersDescriptionText.text = finalOrderWeaponType + "\n" + finalOrderMaterial + "\n" + finalOrderBudget;
+        Weapon.text = finalOrderWeaponType;
+        Material.text = finalOrderMaterial;
+        Budget.text = finalOrderBudget.ToString();
     }
 }
