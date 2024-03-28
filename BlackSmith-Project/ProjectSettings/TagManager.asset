@@ -7,6 +7,9 @@ TagManager:
   - Book
   - GameManger
   - OrderDescriptionText
+  - WeaponText
+  - MaterialText
+  - BudgetText
   layers:
   - Default
   - TransparentFX
