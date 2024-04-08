@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class E_OrderDescriptionIndex : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI Weapon;
-    [SerializeField] TextMeshProUGUI Material;
-    [SerializeField] TextMeshProUGUI Budget;
+    private TextMeshProUGUI Weapon;
+    private TextMeshProUGUI Material;
+    private TextMeshProUGUI Budget;
 
     private int orderID = 0;
 
