@@ -12,6 +12,7 @@ public class E_OrderingLogic : MonoBehaviour
     [SerializeField] TextMeshProUGUI Weapon;
     [SerializeField] TextMeshProUGUI Material;
     [SerializeField] TextMeshProUGUI Budget;
+    [SerializeField] string dataFilename;
 
     private int commonTextVariationsAmount = 7; // normal and cheeky dialogues variations
     private int rareTextVariationsAmount = 3; // elegant dialogues variations
@@ -63,6 +64,16 @@ public class E_OrderingLogic : MonoBehaviour
 
     private string[] weaponTypes = { "Sword", "Spear", "Battle Axe", "Dagger" };
     private string[] materials = { "Bronze", "Brass", "Iron", "Steel" }; //Brass - латунь
+
+    private void Awake()
+    {
+        ordersList = FileHandler.ReadFromJSON<E_OrdersDescription>(dataFilename);
+    }
+
+    private void Start()
+    {
+        E_EventBus.LoadSavedData?.Invoke();
+    }
 
     public void NewCustomerOrder() // Calls all functions needed to choose weapon type, budget and dialogue, after that transfers data into text window in the game scene
     {
@@ -131,11 +142,9 @@ public class E_OrderingLogic : MonoBehaviour
 
     private void OrderDescriptionList()
     {
-        E_OrdersDescription newOrder = new E_OrdersDescription();
-        newOrder.weaponType = finalOrderWeaponType;
-        newOrder.material = finalOrderMaterial;
-        newOrder.budget = finalOrderBudget;
-        ordersList.Add(newOrder);
+        ordersList.Add(new E_OrdersDescription (finalOrderMaterial, finalOrderWeaponType, finalOrderBudget));
+
+        FileHandler.SaveToJSON<E_OrdersDescription>(ordersList, dataFilename);
     }
 
     private void UpdateUIText()
