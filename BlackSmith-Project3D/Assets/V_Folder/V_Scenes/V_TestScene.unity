@@ -213,7 +213,7 @@ MonoBehaviour:
   - Assets/V_Folder/V_Materials/FloorMaterial.mat
   currentMaterialIndex: 0
   renderableMesh:
-    name: UM_OperatedMesh_af5f6df5-eb9a-4019-95e4-5d5ba0938edb
+    name: UM_OperatedMesh_58528a9b-c606-4ba1-9f06-9f9e0e4fdac1
     skinnedMesh: 0
     sharedMesh: {fileID: 4300000, guid: 33b0f789a111fb94ca42bd3896ccc3a5, type: 2}
     buidVersion:
@@ -228,7 +228,7 @@ MonoBehaviour:
     modifierList: []
     currentIndex: -1
   sourceMesh: {fileID: 0}
-  sourceMeshRendererGUID: af5f6df5-eb9a-4019-95e4-5d5ba0938edb
+  sourceMeshRendererGUID: 58528a9b-c606-4ba1-9f06-9f9e0e4fdac1
   guid: 409145b5-92c7-4b4e-b24d-780c572beb10
   localOptions:
     RecalculateTangents: 0
@@ -703,16 +703,24 @@ MonoBehaviour:
   - {fileID: 1928411240}
   - {fileID: 450639965}
   - {fileID: 1594170986}
-  LevelToChangeModel: 0a0000000f00000014000000
+  LevelToChangeModel: 14000000190000001e000000
   CurrentLevelOfModel: 0
   CurrentModel: 0
   ClicksMade: 0
-  ClicksAmountPerPower: 
-  TimeForClickPower: []
+  ClicksAmountPerPower: 02000000030000000400000005000000
+  TimeForClickPower:
+  - 0.5
+  - 0.8
+  - 1
+  - 1.3
   DamageOverAll: 0
-  DamagePerPower: 
+  DamagePerPower: 030000000500000007000000
+  TimeToGetDamagePerPower:
+  - 1.5
+  - 2
+  - 2.5
   AlreadyClicked: 0
-  TimeToWait: 1
+  TimeToWait: 0.7
 --- !u!4 &1740441793
 Transform:
   m_ObjectHideFlags: 0
@@ -1085,7 +1093,7 @@ MonoBehaviour:
   materialsPath: []
   currentMaterialIndex: 0
   renderableMesh:
-    name: UM_OperatedMesh_fb133501-a625-4385-ab25-850a4b95b9d1
+    name: UM_OperatedMesh_150906e5-cad8-4caa-b152-d6913d161b67
     skinnedMesh: 0
     sharedMesh: {fileID: 4300000, guid: f36e137d4c9708043b7e4dae4bfaa07a, type: 2}
     buidVersion:
@@ -1100,7 +1108,7 @@ MonoBehaviour:
     modifierList: []
     currentIndex: -1
   sourceMesh: {fileID: 0}
-  sourceMeshRendererGUID: fb133501-a625-4385-ab25-850a4b95b9d1
+  sourceMeshRendererGUID: 150906e5-cad8-4caa-b152-d6913d161b67
   guid: bf3de841-ad29-4ed3-a47d-9dd72c248c07
   localOptions:
     RecalculateTangents: 0

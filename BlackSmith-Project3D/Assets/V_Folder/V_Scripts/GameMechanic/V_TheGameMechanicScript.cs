@@ -23,6 +23,7 @@ public class V_TheGameMechanicScript : MonoBehaviour
     [Header("Damege Settings")] 
     [SerializeField] private int DamageOverAll;
     [SerializeField] private int[] DamagePerPower;
+    [SerializeField] private float[] TimeToGetDamagePerPower;
     [Space]
     [Header("CoolDown settings")]
     [SerializeField] private bool AlreadyClicked = false;
@@ -51,20 +52,32 @@ public class V_TheGameMechanicScript : MonoBehaviour
     }
     void ReactionToClick()
     {
-        if (PowerOfClick <= TimeForClickPower[0]) { 
-            ClicksMade += ClicksAmountPerPower[0]; }
+        if (PowerOfClick < TimeToGetDamagePerPower[0])
+        {
+            for (int i = 0; i < TimeForClickPower.Length; i++)
+            {
+                if (PowerOfClick <= TimeForClickPower[i])
+                {
+                    Debug.Log("Works1");
+                    ClicksMade += ClicksAmountPerPower[i];
+                    break;
 
-        else if (PowerOfClick <= TimeForClickPower[1]) {
-            ClicksMade += ClicksAmountPerPower[1]; }
+                }
+            }
+        }
+        else if (PowerOfClick >= TimeToGetDamagePerPower[0])
+        {
+            for (int i = 0; i < TimeToGetDamagePerPower.Length; i++)
+            {
+                if (PowerOfClick <= TimeToGetDamagePerPower[i])
+                {
+                    DamageOverAll += DamagePerPower[i];
+                    break;
+                }
 
-        else if (PowerOfClick <= TimeForClickPower[2]) {
-            ClicksMade += ClicksAmountPerPower[2]; }
+            }
+        }
 
-        else if (PowerOfClick <= TimeForClickPower[3]) {
-            ClicksMade += ClicksAmountPerPower[3]; }
-
-        else if (PowerOfClick <= TimeForClickPower[4]) {
-            ClicksMade += ClicksAmountPerPower[4]; }
         if (CurrentLevelOfModel + 1 > LevelToChangeModel.Length) { }
             else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
             {
@@ -82,6 +95,7 @@ public class V_TheGameMechanicScript : MonoBehaviour
         while(ButtonDown == true)
         {
             PowerOfClick = Time.time - StartHoldTime;
+            Debug.Log(PowerOfClick);
             yield return null;
         }
     }
