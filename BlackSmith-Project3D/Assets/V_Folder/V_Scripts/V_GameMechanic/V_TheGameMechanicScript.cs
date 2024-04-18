@@ -16,11 +16,12 @@ public class V_TheGameMechanicScript : MonoBehaviour
     [SerializeField] private int ClicksMade;
     [SerializeField] private int[] ClicksAmountPerPower;
     [SerializeField] private float[] TimeForClickPower;
+    [SerializeField] private int ClicksIfDamaged;
     private bool ButtonDown = false;
     private float StartHoldTime;
     private float PowerOfClick;
     [Space]
-    [Header("Damege Settings")] 
+    [Header("Damege Settings")]
     [SerializeField] private int DamageOverall;
     [SerializeField] private int[] DamagePerPower;
     [SerializeField] private float[] TimeToGetDamagePerPower;
@@ -35,13 +36,13 @@ public class V_TheGameMechanicScript : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetMouseButtonDown(0) && AlreadyClicked == false)
+        if (Input.GetMouseButtonDown(0) && AlreadyClicked == false)
         {
             ButtonDown = true;
             StartHoldTime = Time.time;
             StartCoroutine("ClickHoldTime");
         }
-        if(Input.GetMouseButtonUp(0) && AlreadyClicked == false)
+        if (Input.GetMouseButtonUp(0) && AlreadyClicked == false)
         {
             ButtonDown = false;
             StopCoroutine("ClickHoldTime");
@@ -78,26 +79,27 @@ public class V_TheGameMechanicScript : MonoBehaviour
                 else
                 {
                     DamageOverall += DamageAtFinish;
+                    ClicksMade += ClicksIfDamaged;
                     break;
                 }
             }
         }
 
         if (CurrentLevelOfModel + 1 > LevelToChangeModel.Length) { }
-            else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
-            {
+        else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
+        {
             //Change Model-----------------
-                Models[CurrentModel].active = false;
-                CurrentModel++;
-                Models[CurrentModel].active = true;
+            Models[CurrentModel].active = false;
+            CurrentModel++;
+            Models[CurrentModel].active = true;
             //_____________________________
-                CurrentLevelOfModel++;
-                ClicksMade = 0;
-            } 
+            CurrentLevelOfModel++;
+            ClicksMade = 0;
+        }
     }
     IEnumerator ClickHoldTime()
     {
-        while(ButtonDown == true)
+        while (ButtonDown == true)
         {
             PowerOfClick = Time.time - StartHoldTime;
             Debug.Log(PowerOfClick);
