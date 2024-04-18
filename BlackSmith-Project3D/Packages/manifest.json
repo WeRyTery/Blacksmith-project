@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.tripolygon.umodeler-x": "file:com.tripolygon.umodeler-x-0.19.10/com.tripolygon.umodeler-x-0.19.10.tgz",
+    "com.tripolygon.umodeler-x": "file:com.tripolygon.umodeler-x-0.19.11/com.tripolygon.umodeler-x-0.19.11.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "4.4.2",
