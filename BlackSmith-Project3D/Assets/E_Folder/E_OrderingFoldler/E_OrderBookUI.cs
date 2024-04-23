@@ -49,8 +49,6 @@ public class E_OrderBookUI : MonoBehaviour
 
             float ButtonUsedSpace = OrderButtonPrefab.GetComponent<RectTransform>().sizeDelta.y * (OrderMenu.content.childCount - 3); // Don't change -3 in the end of equastion, it makes too much empty space at the end (-3 means 3 button size less space)
 
-            Debug.Log(ButtonUsedSpace);
-
             if (scrollViewRect.anchoredPosition.y >= ButtonUsedSpace)
             {
                 OrderMenu.content.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, ButtonUsedSpace, 0);
@@ -76,7 +74,7 @@ public class E_OrderBookUI : MonoBehaviour
 
         RectTransform buttonRect = newButton.GetComponent<RectTransform>();
         float OrderButtonDeltaY = OrderButtonPrefab.GetComponent<RectTransform>().sizeDelta.y;
-        float newYButtonPos = (buttonRect.anchoredPosition.y) - ((OrderButtonDeltaY + (OrderButtonDeltaY / 5)) * (OrderMenu.content.childCount - 1)); // We take order button prefab size (hight) and multiply it by amount of children components in our OrderMenu.content, thus will result in spaces between our buttons. After that we decrease our button position by already calculated Y, that represents our space. I can be manually increased if you'll multiply sizeDelta of button on any number (bigger number == bigger space)
+        float newYButtonPos = (buttonRect.anchoredPosition.y) - ((OrderButtonDeltaY + (OrderButtonDeltaY / 5)) * (OrderMenu.content.childCount - 2)); // We take order button prefab size (hight) and multiply it by amount of children components in our OrderMenu.content, thus will result in spaces between our buttons. After that we decrease our button position by already calculated Y, that represents our space. I can be manually increased if you'll multiply sizeDelta of button on any number (bigger number == bigger space)
 
         buttonRect.anchoredPosition = new Vector3(buttonRect.anchoredPosition.x, newYButtonPos, 0); // Changes position of our button by adding space between them.
 

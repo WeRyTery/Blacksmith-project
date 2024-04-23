@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Linq;
-using Unity.VisualScripting;
-using System.Runtime.CompilerServices;
 
 public class E_OrderingLogic : MonoBehaviour
 {
@@ -67,7 +63,7 @@ public class E_OrderingLogic : MonoBehaviour
 
     private void Awake()
     {
-        ordersList = FileHandler.ReadFromJSON<E_OrdersDescription>(dataFilename);
+        ordersList = FileHandler.ReadListFromJSON<E_OrdersDescription>(dataFilename);
     }
 
     private void Start()
@@ -79,7 +75,7 @@ public class E_OrderingLogic : MonoBehaviour
     {
         DialogueTypeChooser();
         OrderDescriptionChooser();
-        OrderDescriptionList();
+        SaveOrderDescriptionList();
         UpdateUIText();
         E_EventBus.NewBookOrder?.Invoke();
     }
@@ -140,7 +136,7 @@ public class E_OrderingLogic : MonoBehaviour
         }
     }
 
-    private void OrderDescriptionList()
+    private void SaveOrderDescriptionList()
     {
         ordersList.Add(new E_OrdersDescription (finalOrderMaterial, finalOrderWeaponType, finalOrderBudget));
 

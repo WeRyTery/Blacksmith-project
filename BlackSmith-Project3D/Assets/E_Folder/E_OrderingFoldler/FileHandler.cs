@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -9,14 +8,20 @@ public static class FileHandler
 {
     public static void SaveToJSON<T>(List<T> toSave, string filename)
     {
-        Debug.Log(GetPath(filename));
         string content = JsonHelper.ToJson<T>(toSave.ToArray());
         WriteFile(GetPath(filename), content);
 
-        Debug.Log(content);
+        Debug.Log("Saved path: " + GetPath(filename));
+    }
+    public static void SaveToJSON<T>(T toSave, string filename)
+    {
+        string content = JsonUtility.ToJson(toSave);
+        WriteFile(GetPath(filename), content);
+
+        Debug.Log("Saved path: " + GetPath(filename));
     }
 
-    public static List<T> ReadFromJSON<T>(string filename)
+    public static List<T> ReadListFromJSON<T>(string filename)
     {
         string content = ReadFile(GetPath(filename));
 
@@ -29,7 +34,22 @@ public static class FileHandler
 
         return res;
     }
-    
+
+    public static T ReadFromJSON<T>(string filename)
+    {
+        string content = ReadFile(GetPath(filename));
+
+        if (string.IsNullOrEmpty(content) || content == "{}")
+        {
+            return default(T);
+        }
+
+        T res = JsonUtility.FromJson<T>(content);
+
+        return res;
+
+    }
+
     private static string GetPath(string filename)
     {
         return Application.persistentDataPath + "/" + filename;

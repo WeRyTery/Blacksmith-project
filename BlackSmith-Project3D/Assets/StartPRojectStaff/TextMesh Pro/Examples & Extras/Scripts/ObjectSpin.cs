@@ -40,16 +40,16 @@ namespace TMPro.Examples
         {
             if (Motion == MotionType.Rotation)
             {
-                m_transform.Rotate(0, SpinSpeed * Time.deltaTime, 0);
+                m_transform.Rotate(0, SpinSpeed * UnityEngine.Time.deltaTime, 0);
             }
             else if (Motion == MotionType.BackAndForth)
             {
-                m_time += SpinSpeed * Time.deltaTime;
+                m_time += SpinSpeed * UnityEngine.Time.deltaTime;
                 m_transform.rotation = Quaternion.Euler(m_initial_Rotation.x, Mathf.Sin(m_time) * RotationRange + m_initial_Rotation.y, m_initial_Rotation.z);
             }
             else
             {
-                m_time += SpinSpeed * Time.deltaTime;
+                m_time += SpinSpeed * UnityEngine.Time.deltaTime;
 
                 float x = 15 * Mathf.Cos(m_time * .95f);
                 float y = 10; // *Mathf.Sin(m_time * 1f) * Mathf.Cos(m_time * 1f);
