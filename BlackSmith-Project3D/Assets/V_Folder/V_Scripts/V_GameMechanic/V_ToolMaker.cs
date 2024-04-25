@@ -21,12 +21,12 @@ public class V_ToolMaker : MonoBehaviour
     private float StartHoldTime;
     private float PowerOfClick;
     [Space]
-<<<<<<< Updated upstream:BlackSmith-Project3D/Assets/V_Folder/V_Scripts/V_GameMechanic/V_TheGameMechanicScript.cs
+
     [Header("Damege Settings")]
     [SerializeField] private int DamageOverall;
-=======
+
     [Header("Damege Settings")] 
->>>>>>> Stashed changes:BlackSmith-Project3D/Assets/V_Folder/V_Scripts/V_GameMechanic/V_ToolMaker.cs
+
     [SerializeField] private int[] DamagePerPower;
     [SerializeField] private float[] TimeToGetDamagePerPower;
     [SerializeField] private int DamageAtFinish;
@@ -83,7 +83,7 @@ public class V_ToolMaker : MonoBehaviour
             {
                 if (PowerOfClick <= TimeToGetDamagePerPower[i])
                 {
-<<<<<<< Updated upstream:BlackSmith-Project3D/Assets/V_Folder/V_Scripts/V_GameMechanic/V_TheGameMechanicScript.cs
+
                     DamageOverall += DamagePerPower[i];
                     break;
                 }
@@ -91,10 +91,10 @@ public class V_ToolMaker : MonoBehaviour
                 {
                     DamageOverall += DamageAtFinish;
                     ClicksMade += ClicksIfDamaged;
-=======
+
                     DamageOfAnyTool.DamageOverAll += DamagePerPower[i];
                     DamageHasBeenMade = true;
->>>>>>> Stashed changes:BlackSmith-Project3D/Assets/V_Folder/V_Scripts/V_GameMechanic/V_ToolMaker.cs
+
                     break;
                 }
             }
