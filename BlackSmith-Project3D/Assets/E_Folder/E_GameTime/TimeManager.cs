@@ -57,6 +57,11 @@ public class TimeManager : MonoBehaviour
                 HourOfDay++;
             }
 
+            if (HourOfDay >= 24)
+            {
+                HourOfDay = 0;
+            }
+
             TimeOfDay = HourOfDay + (MinuteOfHour / RealSecondsInGameHour);
             TimeOfDay %= 24;
             UpdateLighting(TimeOfDay / 24f);

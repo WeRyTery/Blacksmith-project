@@ -8,6 +8,10 @@ TagManager:
   - MaterialText
   - BudgetText
   - Book
+  - DoorToSmithery
+  - TP_Smithery
+  - TP_ReceptionRoom
+  - DoorToReceptionRoom
   layers:
   - Default
   - TransparentFX
@@ -15,7 +19,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Isometric camera to ignore
   - 
   - 
   - 

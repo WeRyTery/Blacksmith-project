@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.69661754, g: 0.7276805, b: 0.6993063, a: 1}
+  m_FogColor: {r: 0.6449051, g: 0.74263346, b: 0.76548123, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.8147413, g: 0.9438975, b: 0.9252417, a: 1}
+  m_AmbientSkyColor: {r: 0.81494755, g: 0.94415957, b: 0.92529595, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17609572, g: 0.22038269, b: 0.30271047, a: 1}
+  m_IndirectSpecularColor: {r: 0.1733, g: 0.21661803, b: 0.29866976, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1221,7 +1221,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.7642001, g: 0.70279384, b: 0.70279384, a: 1}
+  m_Color: {r: 0.76442474, g: 0.70242393, b: 0.70242393, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1280,7 +1280,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405880567}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.047308866, y: -0.8366609, z: 0.54074246, w: 0.07319839}
+  m_LocalRotation: {x: 0.05645844, y: -0.75892216, z: 0.6453225, w: 0.06639713}
   m_LocalPosition: {x: -6.47, y: 13.85, z: 11.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4239,6 +4239,7 @@ GameObject:
   - component: {fileID: 2038821897}
   - component: {fileID: 2038821899}
   - component: {fileID: 2038821900}
+  - component: {fileID: 2038821901}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4312,10 +4313,22 @@ MonoBehaviour:
   DataPath: TimeDataSaver.json
   RealSecondsInGameHour: 60
   SaveTimeDataEveryInSeconds: 600
-  TimeOfDay: 10.383333
-  HourOfDay: 10
+  TimeOfDay: 11.383333
+  HourOfDay: 11
   MinuteOfHour: 23
   CurrentTimeText: {fileID: 328329262}
+--- !u!114 &2038821901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038821895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1a15e855962b17429140843eb87bf59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2058928998
 GameObject:
   m_ObjectHideFlags: 0
