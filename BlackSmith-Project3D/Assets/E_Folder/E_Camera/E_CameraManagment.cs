@@ -1,4 +1,5 @@
 using Cinemachine;
+using Cinemachine.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
@@ -9,51 +10,116 @@ using UnityEngine.UIElements.Experimental;
 public class E_CameraManagment : MonoBehaviour
 {
     [SerializeField] GameObject Player;
+    [SerializeField] CinemachineVirtualCamera OrderCounterCamera;
     [SerializeField] CinemachineVirtualCamera ReceptionRoomCamera;
     [SerializeField] CinemachineVirtualCamera SmitheryCamera;
     [SerializeField] Animator TransiotionAnimations;
 
+    private CinemachineBrain brain;
+
+    private string TeleportPointTag;
+    private bool DoWeNeedTransition;
+    private bool DoWeChangeBlendMode; // Currently only changes to "Ease in Out" style from default "Cut"
+
+    private void Start()
+    {
+        brain = FindObjectOfType<CinemachineBrain>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
+        ResetAllCamerasSettings();
         switch (other.tag)
         {
+            case "OrderCounter":
+                DoWeChangeBlendMode = true;
+                StartCoroutine(ChangeCurrentCamera(OrderCounterCamera));
+                break;
+
             case "DoorToSmithery":
-                StartCoroutine(SmitheringRoom());
+                TeleportPointTag = "TP_Smithery";
+                DoWeNeedTransition = true;
+                StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
                 break;
 
             case "DoorToReceptionRoom":
-                StartCoroutine(ReceptionRoom());
+                TeleportPointTag = "TP_ReceptionRoom";
+                DoWeNeedTransition = true;
+                StartCoroutine(ChangeCurrentCamera(ReceptionRoomCamera));
                 break;
 
             default:
                 Debug.Log("Error, room was not found");
                 break;
         }
-
     }
 
-    IEnumerator ReceptionRoom()
+    private void OnTriggerExit(Collider other)
     {
-        TransiotionAnimations.SetTrigger("EndAnim");
-
-        yield return new WaitForSeconds(1);
-
-        Player.transform.position = GameObject.FindGameObjectWithTag("TP_ReceptionRoom").transform.position;
-        ReceptionRoomCamera.Priority = 100;
-        SmitheryCamera.Priority = 0;
-
-        TransiotionAnimations.SetTrigger("StartAnim");
+        ResetAllCamerasSettings();
+        switch (other.tag)
+        {
+            case "OrderCounter":
+                DoWeChangeBlendMode = true;
+                StartCoroutine(ChangeCurrentCamera(ReceptionRoomCamera));
+                break;
+        }
     }
-    IEnumerator SmitheringRoom()
+
+    IEnumerator ChangeCurrentCamera(CinemachineVirtualCamera cameraToChange)
     {
-        TransiotionAnimations.SetTrigger("EndAnim");
+        switch (DoWeChangeBlendMode)
+        {
+            case true:
+                brain.m_DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.EaseInOut, 2f);
+                break;
+        }
 
-        yield return new WaitForSeconds(1);
+        switch (DoWeNeedTransition)
+        {
+            case true:
+                TransiotionAnimations.SetTrigger("EndAnim");
 
-        Player.transform.position = GameObject.FindGameObjectWithTag("TP_Smithery").transform.position;
-        SmitheryCamera.Priority = 100;
-        ReceptionRoomCamera.Priority = 0;
+                yield return new WaitForSeconds(1);
 
-        TransiotionAnimations.SetTrigger("StartAnim");
+                Player.transform.position = GameObject.FindGameObjectWithTag(TeleportPointTag).transform.position;
+                SetAllCamerasPriorityToZero();
+                cameraToChange.Priority = 100;
+
+                TransiotionAnimations.SetTrigger("StartAnim");
+
+                break;
+
+            default:
+                SetAllCamerasPriorityToZero();
+                cameraToChange.Priority = 100;
+
+                break;
+        }
     }
+
+    private void SetAllCamerasPriorityToZero()
+    {
+        CinemachineVirtualCamera[] cameras = FindObjectsOfType<CinemachineVirtualCamera>();
+
+        foreach (CinemachineVirtualCamera camera in cameras)
+        {
+            camera.Priority = 0;
+        }
+    }
+
+    private void ResetAllCamerasSettings()
+    {
+        // Sets our blend definition to default, AKA: "Cut" style
+        brain.m_DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.Cut, 0);
+        DoWeChangeBlendMode = false;
+        DoWeNeedTransition = false;
+    }
+
+    //Unnecessary part lower, check optimisation?
+
+    /*    private void ChangeCameraBlendMode(CinemachineBlendDefinition.Style blendStyle, float e_blendingTime)
+        {
+            brain.m_DefaultBlend = new CinemachineBlendDefinition(blendStyle, e_blendingTime);
+        }*/
 }

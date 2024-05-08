@@ -12,6 +12,7 @@ TagManager:
   - TP_Smithery
   - TP_ReceptionRoom
   - DoorToReceptionRoom
+  - OrderCounter
   layers:
   - Default
   - TransparentFX
