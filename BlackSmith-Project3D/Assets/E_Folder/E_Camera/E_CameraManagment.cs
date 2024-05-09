@@ -14,6 +14,7 @@ public class E_CameraManagment : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera ReceptionRoomCamera;
     [SerializeField] CinemachineVirtualCamera SmitheryCamera;
     [SerializeField] Animator TransiotionAnimations;
+    [SerializeField] Canvas TransitionCanvas; // Canvas that plays role transition role (animation imitation)
 
     private CinemachineBrain brain;
 
@@ -21,8 +22,12 @@ public class E_CameraManagment : MonoBehaviour
     private bool DoWeNeedTransition;
     private bool DoWeChangeBlendMode; // Currently only changes to "Ease in Out" style from default "Cut"
 
+    private RigidbodyConstraints defaultPlayerConstraints;
+
     private void Start()
     {
+        IsTransitionCanvasEnabled(false);
+        defaultPlayerConstraints = Player.GetComponent<Rigidbody>().constraints;
         brain = FindObjectOfType<CinemachineBrain>();
     }
 
@@ -78,6 +83,9 @@ public class E_CameraManagment : MonoBehaviour
         switch (DoWeNeedTransition)
         {
             case true:
+                IsTransitionCanvasEnabled(true);
+
+                Player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
                 TransiotionAnimations.SetTrigger("EndAnim");
 
                 yield return new WaitForSeconds(1);
@@ -87,6 +95,11 @@ public class E_CameraManagment : MonoBehaviour
                 cameraToChange.Priority = 100;
 
                 TransiotionAnimations.SetTrigger("StartAnim");
+
+                yield return new WaitForSeconds(1);
+                Player.GetComponent<Rigidbody>().constraints = defaultPlayerConstraints;
+
+                IsTransitionCanvasEnabled(false);
 
                 break;
 
@@ -114,6 +127,18 @@ public class E_CameraManagment : MonoBehaviour
         brain.m_DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.Cut, 0);
         DoWeChangeBlendMode = false;
         DoWeNeedTransition = false;
+    }
+
+    private void IsTransitionCanvasEnabled(bool isEnabled)
+    {
+        if (isEnabled)
+        {
+            TransitionCanvas.enabled = true;
+        }
+        else
+        {
+            TransitionCanvas.enabled = false;
+        }
     }
 
     //Unnecessary part lower, check optimisation?
