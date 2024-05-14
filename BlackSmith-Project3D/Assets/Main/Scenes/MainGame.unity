@@ -5124,7 +5124,7 @@ Camera:
   near clip plane: 0.1
   far clip plane: 100
   field of view: 60.000004
-  orthographic: 1
+  orthographic: 0
   orthographic size: 25
   m_Depth: 0
   m_CullingMask:
@@ -8055,7 +8055,7 @@ MonoBehaviour:
     NearClipPlane: 0.1
     FarClipPlane: 100
     Dutch: 0
-    ModeOverride: 2
+    ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
     FocusDistance: 10
