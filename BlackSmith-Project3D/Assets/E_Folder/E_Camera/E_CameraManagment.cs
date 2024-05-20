@@ -140,11 +140,4 @@ public class E_CameraManagment : MonoBehaviour
             TransitionCanvas.enabled = false;
         }
     }
-
-    //Unnecessary part lower, check optimisation?
-
-    /*    private void ChangeCameraBlendMode(CinemachineBlendDefinition.Style blendStyle, float e_blendingTime)
-        {
-            brain.m_DefaultBlend = new CinemachineBlendDefinition(blendStyle, e_blendingTime);
-        }*/
 }
