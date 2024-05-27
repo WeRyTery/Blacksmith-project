@@ -20,6 +20,12 @@ public class FPSController : MonoBehaviour
         ApplyFPSLimit();
     }
 
+    public void Set90FPS()
+    {
+        targetFPS = 90;
+        ApplyFPSLimit();
+    }
+
     public void Set120FPS()
     {
         targetFPS = 120;
