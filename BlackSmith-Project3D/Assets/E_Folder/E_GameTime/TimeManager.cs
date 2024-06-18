@@ -43,15 +43,15 @@ public class TimeManager : MonoBehaviour
 
         if (Application.isPlaying)
         {
-            minuteHandler += UnityEngine.Time.deltaTime;
+            minuteHandler += Time.deltaTime;
 
-            if (minuteHandler >= 1)
+            if (minuteHandler >= RealSecondsInGameHour / 60)
             {
                 minuteHandler = 0;
-                MinuteOfHour += 1;
+                MinuteOfHour++;
             }
 
-            if (MinuteOfHour >= RealSecondsInGameHour)
+            if (MinuteOfHour >= 60)
             {
                 MinuteOfHour = 0;
                 HourOfDay++;

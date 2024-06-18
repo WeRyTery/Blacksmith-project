@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements.Experimental;
 
 public class E_CameraManagment : MonoBehaviour
@@ -14,15 +15,22 @@ public class E_CameraManagment : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera ReceptionRoomCamera;
     [SerializeField] CinemachineVirtualCamera SmitheryCamera;
     [SerializeField] Animator TransiotionAnimations;
+    [SerializeField] Canvas TransitionCanvas; // Canvas that plays role transition role (animation imitation)
 
     private CinemachineBrain brain;
 
     private string TeleportPointTag;
-    private bool DoWeNeedTransition;
+    private bool DoWeNeedTransition; // Do we need Animation transition when going from one camera to another
     private bool DoWeChangeBlendMode; // Currently only changes to "Ease in Out" style from default "Cut"
+
+    private RigidbodyConstraints defaultPlayerConstraints; // We need to freeze player rotation or otherwise we wont be able to move normally
+
+    private string LayerMaskName; // Name of the mask that SHOULD be INGORED by main camera
 
     private void Start()
     {
+        IsTransitionCanvasEnabled(false);
+        defaultPlayerConstraints = Player.GetComponent<Rigidbody>().constraints;
         brain = FindObjectOfType<CinemachineBrain>();
     }
 
@@ -32,20 +40,15 @@ public class E_CameraManagment : MonoBehaviour
         switch (other.tag)
         {
             case "OrderCounter":
-                DoWeChangeBlendMode = true;
-                StartCoroutine(ChangeCurrentCamera(OrderCounterCamera));
+                EnableOrderCounterCamera();
                 break;
 
             case "DoorToSmithery":
-                TeleportPointTag = "TP_Smithery";
-                DoWeNeedTransition = true;
-                StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
+                EnableDoorToSmitheryCamera();
                 break;
 
             case "DoorToReceptionRoom":
-                TeleportPointTag = "TP_ReceptionRoom";
-                DoWeNeedTransition = true;
-                StartCoroutine(ChangeCurrentCamera(ReceptionRoomCamera));
+                EnableReceptionRoomCamera();
                 break;
 
             default:
@@ -53,6 +56,31 @@ public class E_CameraManagment : MonoBehaviour
                 break;
         }
     }
+
+    private void EnableOrderCounterCamera()
+    {
+        DoWeChangeBlendMode = true;
+        StartCoroutine(ChangeCurrentCamera(OrderCounterCamera));
+    }
+
+    private void EnableReceptionRoomCamera()
+    {
+        TeleportPointTag = "TP_ReceptionRoom";
+        DoWeNeedTransition = true;
+        LayerMaskName = "Ignore reception room";
+        StartCoroutine(ChangeCurrentCamera(ReceptionRoomCamera));
+
+    }
+
+    private void EnableDoorToSmitheryCamera()
+    {
+        TeleportPointTag = "TP_Smithery";
+        DoWeNeedTransition = true;
+        LayerMaskName = "Ignore smithing room";
+        StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
+    }
+
+
 
     private void OnTriggerExit(Collider other)
     {
@@ -78,6 +106,9 @@ public class E_CameraManagment : MonoBehaviour
         switch (DoWeNeedTransition)
         {
             case true:
+                IsTransitionCanvasEnabled(true);
+
+                Player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
                 TransiotionAnimations.SetTrigger("EndAnim");
 
                 yield return new WaitForSeconds(1);
@@ -88,6 +119,15 @@ public class E_CameraManagment : MonoBehaviour
 
                 TransiotionAnimations.SetTrigger("StartAnim");
 
+                ChangeCullingMask(LayerMaskName);
+
+                yield return new WaitForSeconds(1);
+
+
+                Player.GetComponent<Rigidbody>().constraints = defaultPlayerConstraints;
+
+                IsTransitionCanvasEnabled(false);
+
                 break;
 
             default:
@@ -96,6 +136,13 @@ public class E_CameraManagment : MonoBehaviour
 
                 break;
         }
+
+
+    }
+
+    private void ChangeCullingMask(string LayerMaskName) // Changes culling mask of which object will be rendered on scene
+    {
+        Camera.main.cullingMask = ~(1 << LayerMask.NameToLayer(LayerMaskName)); // ~ = NOT, so we render everything EXCEPT value in LayerMaskName string
     }
 
     private void SetAllCamerasPriorityToZero()
@@ -116,10 +163,15 @@ public class E_CameraManagment : MonoBehaviour
         DoWeNeedTransition = false;
     }
 
-    //Unnecessary part lower, check optimisation?
-
-    /*    private void ChangeCameraBlendMode(CinemachineBlendDefinition.Style blendStyle, float e_blendingTime)
+    private void IsTransitionCanvasEnabled(bool isEnabled) 
+    {
+        if (isEnabled)
         {
-            brain.m_DefaultBlend = new CinemachineBlendDefinition(blendStyle, e_blendingTime);
-        }*/
+            TransitionCanvas.enabled = true;
+        }
+        else
+        {
+            TransitionCanvas.enabled = false;
+        }
+    }
 }

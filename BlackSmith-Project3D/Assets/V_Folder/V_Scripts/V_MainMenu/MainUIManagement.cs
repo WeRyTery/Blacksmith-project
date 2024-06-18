@@ -23,14 +23,31 @@ public class MainUIManagement : MonoBehaviour
     }
     public void OpenAudioSettings()
     {
-        SettingsPanels[0].SetActive(!SettingsPanels[0].active);
-    } 
+        ActivatePanel(0);
+    }
+
     public void OpenGraphicSettings()
     {
-        SettingsPanels[1].SetActive(!SettingsPanels[1].active);
-    } 
-    public void OpenKEyBindSettings()
+        ActivatePanel(1);
+    }
+
+    public void OpenKeyBindSettings()
     {
-        SettingsPanels[2].SetActive(!SettingsPanels[2].active);
+        ActivatePanel(2);
+    }
+
+    private void ActivatePanel(int index)
+    {
+        for (int i = 0; i < SettingsPanels.Length; i++)
+        {
+            if (i == index)
+            {
+                SettingsPanels[i].SetActive(true);
+            }
+            else
+            {
+                SettingsPanels[i].SetActive(false);
+            }
+        }
     }
 }
