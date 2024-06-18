@@ -32,7 +32,7 @@ public class ControlsForSharpening : MonoBehaviour
     {
         if (Input.GetKeyDown(FlipKey))
         {
-            transform.Rotate(new Vector3(180,90,0));
+            transform.Rotate(new Vector3(180,0,0));
 
         }
         if (Input.GetKey(UpKey) && transform.position.z < MaxPositionUp)
