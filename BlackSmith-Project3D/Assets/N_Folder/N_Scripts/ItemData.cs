@@ -22,10 +22,12 @@ public abstract class ItemData //base for creating an item
 public class NewWeapon : ItemData //item that's in process of forging 
 {
     public float Damage;
+    public string State;
 
-    public NewWeapon(string name, float damage) : base(name, "NewWeapon")
+    public NewWeapon(string state, string name, float damage) : base(name, "NewWeapon")
     {
         Damage = damage;
+        State = state;
     }
 }
 
