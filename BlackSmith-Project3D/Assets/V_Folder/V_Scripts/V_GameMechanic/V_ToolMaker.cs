@@ -22,6 +22,9 @@ public class V_ToolMaker : MonoBehaviour
     private float PowerOfClick;
     [Space]
 
+    [Header("Damege Settings")]
+    [SerializeField] private int DamageOverall;
+
     [Header("Damege Settings")] 
 
     [SerializeField] private int[] DamagePerPower;
@@ -36,7 +39,7 @@ public class V_ToolMaker : MonoBehaviour
 
     [Space]
     [Header("other Scripts")]
-    public ToolStats DamageOfAnyTool;
+    public ToolDamage DamageOfAnyTool;
     private void Start()
     {
         Models[0].active = true;
@@ -80,18 +83,27 @@ public class V_ToolMaker : MonoBehaviour
             {
                 if (PowerOfClick <= TimeToGetDamagePerPower[i])
                 {
-                    DamageOfAnyTool.ToolDamage += DamagePerPower[i];
+
+                    DamageOverall += DamagePerPower[i];
                     break;
                 }
                 else
                 {
-                    DamageOfAnyTool.ToolDamage += DamageAtFinish;
+                    DamageOverall += DamageAtFinish;
                     ClicksMade += ClicksIfDamaged;
+
+                    DamageOfAnyTool.DamageOverAll += DamagePerPower[i];
                     DamageHasBeenMade = true;
 
                     break;
                 }
             }
+            if(!DamageHasBeenMade)
+            {
+                DamageOfAnyTool.DamageOverAll += DamageAtFinish;
+            }
+
+            DamageHasBeenMade = false;
         }
 
         if (CurrentLevelOfModel + 1 > LevelToChangeModel.Length) { }
