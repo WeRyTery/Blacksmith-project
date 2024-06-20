@@ -6840,7 +6840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.0438385
+      value: 25.79
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6848,7 +6848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 106.239204
+      value: 103.37
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -38673,7 +38673,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82815df8e7a5400428cedb629e9d6fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationPrecent: 1
 --- !u!23 &946819378
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80302,6 +80301,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 4962278454819722532, guid: 09cb3020e98efe24eb2a459d6b7eb2e2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5705523812469271731, guid: 09cb3020e98efe24eb2a459d6b7eb2e2,
+        type: 3}
+      propertyPath: MainCamera
+      value: 
+      objectReference: {fileID: 730127248}
     - target: {fileID: 5755710035269714585, guid: 09cb3020e98efe24eb2a459d6b7eb2e2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -89715,6 +89724,7 @@ MonoBehaviour:
   ReceptionRoomCamera: {fileID: 599815963}
   SmitheryCamera: {fileID: 2085108142}
   TransiotionAnimations: {fileID: 545952826}
+  TransitionCanvas: {fileID: 0}
 --- !u!4 &2099099183 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 455772, guid: 061faed207d7a4b52b09b4f68119bae4,
