@@ -10,4 +10,7 @@ public static class E_EventBus
     public static Action NewBookOrder;
 
     public static Action LoadSavedData;
+
+    public static Action ResetUXafterSmithingMechanic;
+    public static Action EnableSmithingMechanicUI;
 }

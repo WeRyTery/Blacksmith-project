@@ -13,6 +13,9 @@ TagManager:
   - TP_ReceptionRoom
   - DoorToReceptionRoom
   - OrderCounter
+  - StartMelting
+  - StartSmithing
+  - StartSharpening
   layers:
   - Default
   - TransparentFX

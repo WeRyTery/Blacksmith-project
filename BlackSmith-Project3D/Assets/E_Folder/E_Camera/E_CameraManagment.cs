@@ -2,6 +2,7 @@ using Cinemachine;
 using Cinemachine.Editor;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,10 +11,20 @@ using UnityEngine.UIElements.Experimental;
 
 public class E_CameraManagment : MonoBehaviour
 {
-    [SerializeField] GameObject Player;
+    [Header("Room Cameras:")]
+    public static GameObject Player;
     [SerializeField] CinemachineVirtualCamera OrderCounterCamera;
     [SerializeField] CinemachineVirtualCamera ReceptionRoomCamera;
     [SerializeField] CinemachineVirtualCamera SmitheryCamera;
+    [Space]
+
+    [Header("Smithing process cameras:")]
+    [SerializeField] CinemachineVirtualCamera MeltingFurnaceCamera;
+    [SerializeField] CinemachineVirtualCamera SmithingCamera;
+    [SerializeField] CinemachineVirtualCamera SharpeningStoneCamera;
+    [Space]
+
+    [Header("Transition animation components:")]
     [SerializeField] Animator TransiotionAnimations;
     [SerializeField] Canvas TransitionCanvas; // Canvas that plays role transition role (animation imitation)
 
@@ -22,6 +33,10 @@ public class E_CameraManagment : MonoBehaviour
     private string TeleportPointTag;
     private bool DoWeNeedTransition; // Do we need Animation transition when going from one camera to another
     private bool DoWeChangeBlendMode; // Currently only changes to "Ease in Out" style from default "Cut"
+    private bool DoWeFreezePlayerMovement;
+
+    private bool PlayerInTriggerZone;
+    private string CameraZoneTag;
 
     private RigidbodyConstraints defaultPlayerConstraints; // We need to freeze player rotation or otherwise we wont be able to move normally
 
@@ -31,6 +46,8 @@ public class E_CameraManagment : MonoBehaviour
 
     private void Start()
     {
+        Player = GameObject.FindGameObjectWithTag("Player");
+
         IsTransitionCanvasEnabled(false);
         defaultPlayerConstraints = Player.GetComponent<Rigidbody>().constraints;
         brain = FindObjectOfType<CinemachineBrain>();
@@ -38,27 +55,48 @@ public class E_CameraManagment : MonoBehaviour
         ChangeCullingMask(DefaultCullingMask);
     }
 
+    private void Update()
+    {
+        if (PlayerInTriggerZone && Input.GetKeyDown(KeyCode.E) && CameraZoneTag != "")
+        {
+            switch (CameraZoneTag)
+            {
+                case "OrderCounter":
+                    EnableOrderCounterCamera();
+                    break;
+
+                case "DoorToSmithery":
+                    EnableDoorToSmitheryCamera();
+                    break;
+
+                case "DoorToReceptionRoom":
+                    EnableReceptionRoomCamera();
+                    break;
+
+                case "StartMelting":
+                    EnableMeltingFurnaceCamera();
+                    break;
+
+                case "StartSmithing":
+                    EnableSmithingCamera();
+                    break;
+
+                case "StartSharpening":
+                    EnableSharpeningStoneCamera();
+                    break;
+
+                default:
+                    Debug.Log("Error, room was not found");
+                    break;
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         ResetAllCamerasSettings();
-        switch (other.tag)
-        {
-            case "OrderCounter":
-                EnableOrderCounterCamera();
-                break;
-
-            case "DoorToSmithery":
-                EnableDoorToSmitheryCamera();
-                break;
-
-            case "DoorToReceptionRoom":
-                EnableReceptionRoomCamera();
-                break;
-
-            default:
-                Debug.Log("Error, room was not found");
-                break;
-        }
+        PlayerInTriggerZone = true;
+        CameraZoneTag = other.tag;
     }
 
     private void EnableOrderCounterCamera()
@@ -84,6 +122,29 @@ public class E_CameraManagment : MonoBehaviour
         StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
     }
 
+    ////////////////////// SMITHING MECHANIC CAMERAS BELOW ///////////////////////
+    
+    private void EnableMeltingFurnaceCamera()
+    {
+        DoWeFreezePlayerMovement = true;
+        StartCoroutine(ChangeCurrentCamera(MeltingFurnaceCamera));
+        SubscribeAndCallEvents();
+    }
+
+    private void EnableSmithingCamera()
+    {
+        DoWeFreezePlayerMovement = true;
+        StartCoroutine(ChangeCurrentCamera(SmithingCamera));
+        SubscribeAndCallEvents();
+    }
+
+    private void EnableSharpeningStoneCamera()
+    {
+        DoWeFreezePlayerMovement = true;
+        StartCoroutine(ChangeCurrentCamera(SharpeningStoneCamera));
+        SubscribeAndCallEvents();
+    }
+
 
 
     private void OnTriggerExit(Collider other)
@@ -96,10 +157,18 @@ public class E_CameraManagment : MonoBehaviour
                 StartCoroutine(ChangeCurrentCamera(ReceptionRoomCamera));
                 break;
         }
+
     }
 
     IEnumerator ChangeCurrentCamera(CinemachineVirtualCamera cameraToChange)
     {
+        switch (DoWeFreezePlayerMovement)
+        {
+            case true:
+                Player.GetComponent<FirstPersonMovement>().enabled = false;
+                break;
+        }
+
         switch (DoWeChangeBlendMode)
         {
             case true:
@@ -190,5 +259,17 @@ public class E_CameraManagment : MonoBehaviour
         {
             TransitionCanvas.enabled = false;
         }
+    }
+
+    public void SubscribeAndCallEvents()
+    {
+        E_EventBus.EnableSmithingMechanicUI?.Invoke();
+        E_EventBus.ResetUXafterSmithingMechanic += SetCamerasBackAfterSmithingMechanic;
+    }
+
+    public void SetCamerasBackAfterSmithingMechanic()
+    {
+        Player.GetComponent<FirstPersonMovement>().enabled = true;
+        StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
     }
 }
