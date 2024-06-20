@@ -25,6 +25,8 @@ public class E_CameraManagment : MonoBehaviour
 
     private RigidbodyConstraints defaultPlayerConstraints; // We need to freeze player rotation or otherwise we wont be able to move normally
 
+    [SerializeField] string DefaultCullingMask = "Ignore reception room"; // Name of the culling mask that will be ignored in the main scene
+
     private string LayerMaskName; // Name of the mask that SHOULD be INGORED by main camera
 
     private void Start()
@@ -32,6 +34,8 @@ public class E_CameraManagment : MonoBehaviour
         IsTransitionCanvasEnabled(false);
         defaultPlayerConstraints = Player.GetComponent<Rigidbody>().constraints;
         brain = FindObjectOfType<CinemachineBrain>();
+
+        ChangeCullingMask(DefaultCullingMask);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -108,6 +112,10 @@ public class E_CameraManagment : MonoBehaviour
             case true:
                 IsTransitionCanvasEnabled(true);
 
+                Vector3 CameraRotation = new Vector3(Camera.main.transform.rotation.x, 0, Camera.main.transform.rotation.y);
+
+                Player.transform.rotation = Quaternion.Euler(Camera.main.transform.rotation.x, 0, Camera.main.transform.rotation.y);
+
                 Player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
                 TransiotionAnimations.SetTrigger("EndAnim");
 
@@ -142,7 +150,16 @@ public class E_CameraManagment : MonoBehaviour
 
     private void ChangeCullingMask(string LayerMaskName) // Changes culling mask of which object will be rendered on scene
     {
-        Camera.main.cullingMask = ~(1 << LayerMask.NameToLayer(LayerMaskName)); // ~ = NOT, so we render everything EXCEPT value in LayerMaskName string
+        if (LayerMaskName != "")
+        {
+            Camera.main.cullingMask = ~(1 << LayerMask.NameToLayer(LayerMaskName)); // ~ = NOT, so we render everything EXCEPT value in LayerMaskName string
+        }
+        else
+        {
+            Camera.main.cullingMask = default; // Not sure this works
+            Debug.Log("Culling mask was not set");
+        }
+
     }
 
     private void SetAllCamerasPriorityToZero()
@@ -163,7 +180,7 @@ public class E_CameraManagment : MonoBehaviour
         DoWeNeedTransition = false;
     }
 
-    private void IsTransitionCanvasEnabled(bool isEnabled) 
+    private void IsTransitionCanvasEnabled(bool isEnabled)
     {
         if (isEnabled)
         {
