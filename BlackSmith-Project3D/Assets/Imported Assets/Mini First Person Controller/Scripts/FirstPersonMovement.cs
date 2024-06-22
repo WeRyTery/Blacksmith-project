@@ -1,44 +1,44 @@
-﻿using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FirstPersonMovement : MonoBehaviour
 {
-    public float speed = 5;
+    Rigidbody rb;
 
-    [Header("Running")]
-    public bool canRun = true;
-    public bool IsRunning { get; private set; }
-    public float runSpeed = 9;
-    public KeyCode runningKey = KeyCode.LeftShift;
-
-    Rigidbody rigidbody;
-    /// <summary> Functions to override movement speed. Will use the last added override. </summary>
-    public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
-
-
-
-    void Awake()
+    [SerializeField] float MovementSpeed = 5;
+    [SerializeField] Transform cam;
+    private void Start()
     {
-        // Get the rigidbody on this.
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate()
+    private void Update()
     {
-        // Update IsRunning from input.
-        IsRunning = canRun && Input.GetKey(runningKey);
+        //Inputs
+        float horInput = Input.GetAxis("Horizontal") * MovementSpeed;
+        float verInput = Input.GetAxis("Vertical") * MovementSpeed;
 
-        // Get targetMovingSpeed.
-        float targetMovingSpeed = IsRunning ? runSpeed : speed;
-        if (speedOverrides.Count > 0)
+        //Camera direction
+        Vector3 camForward = cam.forward;
+        Vector3 camRight = cam.right;
+
+        camForward.y = 0;
+        camRight.y = 0;
+
+        //Creating relative camera direction
+        Vector3 forwardRelative = verInput * camForward;
+        Vector3 rightRelative = horInput * camRight;
+
+        Vector3 movementDirection = forwardRelative + rightRelative;
+
+        //Movement
+        rb.velocity = new Vector3(movementDirection.x, rb.velocity.y, movementDirection.z);
+
+        
+        if (!Mathf.Approximately(rb.velocity.magnitude, 0)) //When speed == ~0, character wont turn away and face static position
         {
-            targetMovingSpeed = speedOverrides[speedOverrides.Count - 1]();
+            transform.forward = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         }
-
-        // Get targetVelocity from input.
-        Vector2 targetVelocity =new Vector2( Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);
-
-        // Apply movement.
-        rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);
     }
 }
