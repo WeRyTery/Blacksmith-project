@@ -44,9 +44,12 @@ public class E_CameraManagment : MonoBehaviour
 
     private string LayerMaskName; // Name of the mask that SHOULD be INGORED by main camera
 
+    private FirstPersonMovement playerMovementScript;
+
     private void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
+        playerMovementScript = Player.gameObject.GetComponent<FirstPersonMovement>();
 
         IsTransitionCanvasEnabled(false);
         defaultPlayerConstraints = Player.GetComponent<Rigidbody>().constraints;
@@ -165,7 +168,7 @@ public class E_CameraManagment : MonoBehaviour
         switch (DoWeFreezePlayerMovement)
         {
             case true:
-                Player.GetComponent<FirstPersonMovement>().enabled = false;
+                playerMovementScript.enabled = false;
                 break;
         }
 
@@ -247,6 +250,7 @@ public class E_CameraManagment : MonoBehaviour
         brain.m_DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.Cut, 0);
         DoWeChangeBlendMode = false;
         DoWeNeedTransition = false;
+        DoWeFreezePlayerMovement = false;
     }
 
     private void IsTransitionCanvasEnabled(bool isEnabled)
@@ -269,7 +273,9 @@ public class E_CameraManagment : MonoBehaviour
 
     public void SetCamerasBackAfterSmithingMechanic()
     {
-        Player.GetComponent<FirstPersonMovement>().enabled = true;
+        ResetAllCamerasSettings();
+
+        playerMovementScript.enabled = true;
         StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
     }
 }
