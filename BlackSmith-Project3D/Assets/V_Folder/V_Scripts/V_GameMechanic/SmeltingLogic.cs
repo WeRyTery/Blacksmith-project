@@ -27,7 +27,7 @@ public class SmeltingLogic : MonoBehaviour
             PutMaterialIn = true;
         }
     }
-    IEnumerator StartSmelitng()
+    IEnumerator StartSmelting()
     {
         yield return new WaitForSeconds(TimeToSmeltMaterial);
         MeltedMaterialObject.SetActive(false);

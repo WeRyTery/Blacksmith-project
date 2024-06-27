@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class SmithingUI : MonoBehaviour
 {
     [SerializeField] GameObject Close; // Button
+    [SerializeField] GameObject Next; // Button
 
     private void Start()
     {

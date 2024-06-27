@@ -39,7 +39,7 @@ public class V_ToolMaker : MonoBehaviour
 
     [Space]
     [Header("other Scripts")]
-    public ToolDamage DamageOfAnyTool;
+    public ToolStats DamageOfAnyTool;
     private void Start()
     {
         Models[0].active = true;
@@ -92,7 +92,7 @@ public class V_ToolMaker : MonoBehaviour
                     DamageOverall += DamageAtFinish;
                     ClicksMade += ClicksIfDamaged;
 
-                    DamageOfAnyTool.DamageOverAll += DamagePerPower[i];
+                    DamageOfAnyTool.DamageOfATool += DamagePerPower[i];
                     DamageHasBeenMade = true;
 
                     break;
@@ -100,7 +100,7 @@ public class V_ToolMaker : MonoBehaviour
             }
             if(!DamageHasBeenMade)
             {
-                DamageOfAnyTool.DamageOverAll += DamageAtFinish;
+                DamageOfAnyTool.DamageOfATool += DamageAtFinish;
             }
 
             DamageHasBeenMade = false;

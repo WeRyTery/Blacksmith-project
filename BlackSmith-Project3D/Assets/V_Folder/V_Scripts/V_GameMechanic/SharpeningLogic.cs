@@ -10,7 +10,7 @@ public class SharpeningLogic : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private int SharpeningDamage;
     [SerializeField] private int SharpenedAmountLimit;
-    public ToolDamage DamageOnTool;
+    public ToolStats DamageOnTool;
     [Header("Sharpening Settings")]
     [SerializeField] private int SharpenedAmount;
     [SerializeField] private int AmountForEachSharpeningCycle;
@@ -24,7 +24,7 @@ public class SharpeningLogic : MonoBehaviour
         }
         else if(SharpenedAmount >= SharpenedAmountLimit && !SharpeningStarted)
         {
-            DamageOnTool.DamageOverAll += SharpeningDamage;
+            DamageOnTool.DamageOfATool += SharpeningDamage;
             SharpeningStarted = true;
             StartCoroutine("SharpeningCoolDown");
         }
