@@ -14,7 +14,7 @@ public class SmithingCycle : MonoBehaviour
     }
     private void StartSmelting()
     {
-       Button.Set
+        //Button.Set
     }
     public void TheSmitingLogic()
     {
