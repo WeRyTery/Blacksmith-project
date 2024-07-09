@@ -6,32 +6,16 @@ using UnityEngine;
 
 public class SmeltingLogic : MonoBehaviour
 {
-    [SerializeField] private Button Put_StartSmelting;
-    [SerializeField] private float TimeToSmeltMaterial;
-    [SerializeField] private bool PutMaterialIn = false;
-    [SerializeField] private GameObject SwordObject;
-    [SerializeField] private GameObject MaterialObject;
-    [SerializeField] private GameObject MeltedMaterialObject;
 
+    [SerializeField] private float TimeToSmeltMaterial = 5f;
+    public SmithingCycle ControlOfMechanic;
 
-    public void StartEverything()
-    {
-        if (PutMaterialIn)
-        {
-            MaterialObject.SetActive(false);
-            MeltedMaterialObject.SetActive(true);
-            StartCoroutine("StartSmelting");
-        }
-        else
-        {
-            PutMaterialIn = true;
-        }
-    }
-    IEnumerator StartSmelting()
+    public IEnumerator StartSmelting()
     {
         yield return new WaitForSeconds(TimeToSmeltMaterial);
-        MeltedMaterialObject.SetActive(false);
-        SwordObject.SetActive(true);
+        ControlOfMechanic.MaterialToDisplay.SetActive(false);
+        ControlOfMechanic.InstrumentToDisplay[0].SetActive(true);
+        Debug.Log("Smelting");
 
     }
 }
