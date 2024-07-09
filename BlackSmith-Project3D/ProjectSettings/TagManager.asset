@@ -16,6 +16,7 @@ TagManager:
   - StartMelting
   - StartSmithing
   - StartSharpening
+  - NotEnoughMoney
   layers:
   - Default
   - TransparentFX
