@@ -1,5 +1,6 @@
 using Cinemachine;
 using System.Collections;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 public class E_CameraManagment : MonoBehaviour
@@ -20,6 +21,13 @@ public class E_CameraManagment : MonoBehaviour
     [Header("Transition animation components:")]
     [SerializeField] Animator TransiotionAnimations;
     [SerializeField] Canvas TransitionCanvas; // Canvas that plays role transition role (animation imitation)
+    [Space]
+
+    [Header("Smiting Cycle variables")]
+     public bool IsSmiting = false;
+     public bool IsSmelting = false;
+     public bool IsSharpening = false;
+
 
     private CinemachineBrain brain;
 
@@ -71,14 +79,17 @@ public class E_CameraManagment : MonoBehaviour
 
                 case "StartMelting":
                     EnableMeltingFurnaceCamera();
+                    IsSmiting = true;
                     break;
 
                 case "StartSmithing":
                     EnableSmithingCamera();
+                    IsSmiting = true;
                     break;
 
                 case "StartSharpening":
                     EnableSharpeningStoneCamera();
+                    IsSharpening = true;
                     break;
 
                 default:
