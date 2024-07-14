@@ -10,7 +10,12 @@ public class SmeltingLogic : MonoBehaviour
     [SerializeField] private float TimeToSmeltMaterial = 5f;
     public SmithingCycle ControlOfMechanic;
 
-    public IEnumerator StartSmelting()
+    public void SmeltingStart()
+    {
+        StartCoroutine(StartSmelting());
+    }
+
+    IEnumerator StartSmelting()
     {
         yield return new WaitForSeconds(TimeToSmeltMaterial);
         ControlOfMechanic.MaterialToDisplay.SetActive(false);

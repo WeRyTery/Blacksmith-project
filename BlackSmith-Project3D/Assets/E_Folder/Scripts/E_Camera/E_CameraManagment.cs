@@ -79,7 +79,7 @@ public class E_CameraManagment : MonoBehaviour
 
                 case "StartMelting":
                     EnableMeltingFurnaceCamera();
-                    IsSmiting = true;
+                    IsSmelting = true;
                     break;
 
                 case "StartSmithing":

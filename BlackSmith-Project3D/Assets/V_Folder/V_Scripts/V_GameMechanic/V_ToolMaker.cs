@@ -39,7 +39,8 @@ public class V_ToolMaker : MonoBehaviour
 
     [Space]
     [Header("other Scripts")]
-    public ToolStats DamageOfAnyTool;
+    public ToolStats WeaponStats;
+
     private void Start()
     {
         Models[0].active = true;
@@ -92,7 +93,7 @@ public class V_ToolMaker : MonoBehaviour
                     DamageOverall += DamageAtFinish;
                     ClicksMade += ClicksIfDamaged;
 
-                    DamageOfAnyTool.DamageOfATool += DamagePerPower[i];
+                    WeaponStats.DamageOfATool += DamagePerPower[i];
                     DamageHasBeenMade = true;
 
                     break;
@@ -100,22 +101,28 @@ public class V_ToolMaker : MonoBehaviour
             }
             if(!DamageHasBeenMade)
             {
-                DamageOfAnyTool.DamageOfATool += DamageAtFinish;
+                WeaponStats.DamageOfATool += DamageAtFinish;
             }
 
             DamageHasBeenMade = false;
         }
 
-        if (CurrentLevelOfModel + 1 > LevelToChangeModel.Length) { }
+        if (CurrentLevelOfModel + 1> LevelToChangeModel.Length)
+        {
+            enabled = false;
+        }
         else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
         {
-            //Change Model-----------------
             Models[CurrentModel].active = false;
             CurrentModel++;
+
             Models[CurrentModel].active = true;
-            //_____________________________
             CurrentLevelOfModel++;
+
+            WeaponStats.StageOfATool = CurrentLevelOfModel;
+
             ClicksMade = 0;
+            
         }
     }
     IEnumerator ClickHoldTime()

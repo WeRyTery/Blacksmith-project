@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class SmithingCycle : MonoBehaviour
 {
@@ -20,16 +21,32 @@ public class SmithingCycle : MonoBehaviour
     [SerializeField] private int ObjectMaterial;
     [Space]
 
-    [Header("Display objects")]
 
+    [Header("Display objects")]
     public GameObject[] InstrumentToDisplay = new GameObject[2];//0 = 1 level of instrument, 1 = 4 level of instrument
     public GameObject[] PositionsInstrumentToDisplay = new GameObject[3];//0 = Smelting, 1 = Smithing, 2 = Sharpening
     public GameObject MaterialToDisplay;
-    [Header("Other")]
 
+
+    [Header("Sword & scripts")]
+    [SerializeField] private GameObject sword;
+    public V_ToolMaker smithing;
+    public ControlsForSharpening sharpening;
+    [Space]
+
+
+    [Header("Other")]
     public TestHolderSCriptForObjject ObjectStats;
     public SmeltingLogic SmeltingScript;
     public E_CameraManagment CameraStateScript;
+
+    private void Start()
+    {
+        sharpening = sword.GetComponentInChildren<ControlsForSharpening>();
+        smithing = gameObject.GetComponent<V_ToolMaker>();
+    }
+
+
 
     private void Update()
     {
@@ -38,18 +55,16 @@ public class SmithingCycle : MonoBehaviour
             InstrumentToDisplay[0] = ObjectStats.InstrumentObject[0];
             MaterialToDisplay = ObjectStats.MaterialObject;
             MaterialToDisplay.SetActive(true);
-            //TheSmeltingLogic();
+            TheSmeltingLogic();
             ButtonPressed = false;
         }
         else if (CameraStateScript.IsSharpening == true && ButtonPressed)
         {
-
             TheSharpeningLogic();
             ButtonPressed = false;
         }
         else if (CameraStateScript.IsSmiting == true && ButtonPressed)
         {
-
             TheSmitingLogic();
             ButtonPressed = false;
         }
@@ -60,16 +75,17 @@ public class SmithingCycle : MonoBehaviour
     }
     private void TheSmeltingLogic()
     {
-        SmeltingScript.StartSmelting();
+        SmeltingScript.SmeltingStart();
         
     }
     private void TheSmitingLogic()
     {
-        Debug.Log("Smiting");
+        smithing.enabled = true;
     }
     private void TheSharpeningLogic()
     {
-        Debug.Log("Sharpening");
+        sharpening.enabled = true;
+
     }
     public void PutObject()
     {

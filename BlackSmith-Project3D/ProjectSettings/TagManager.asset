@@ -17,6 +17,7 @@ TagManager:
   - StartSmithing
   - StartSharpening
   - NotEnoughMoney
+  - MechanicManager
   layers:
   - Default
   - TransparentFX
