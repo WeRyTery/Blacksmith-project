@@ -12,7 +12,7 @@ public class InventoryTest : MonoBehaviour
         _inventory = GetComponent<InventoryManager>();
 
         // Add some items to the inventory
-        _inventory.AddItem(new NewWeapon("melt", "One_Hand", 50));
+        _inventory.AddItem(new NewWeapon("iron", "One_Hand", 50, 100));
         _inventory.AddItem(new Metals("Iron Ore", 5));
         _inventory.AddItem(new Handle("Wooden Handle", 2));
 
