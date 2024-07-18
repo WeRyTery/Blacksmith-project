@@ -52447,7 +52447,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1247582619
 RectTransform:
   m_ObjectHideFlags: 0
@@ -53036,7 +53036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1256851771
 RectTransform:
   m_ObjectHideFlags: 0
@@ -70473,8 +70473,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 498d570cc15f0964db65c5ea219613ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Close: {fileID: 1247582618}
-  Next: {fileID: 1256851770}
   CameraStateScript: {fileID: 2098600838}
 --- !u!114 &1652720513
 MonoBehaviour:
@@ -70523,7 +70521,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1652720510}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -95651,6 +95649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1870741f0f3249f44b06b5bc42aefcee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SwordColliderHolder: {fileID: 5817394337742572761}
   Models:
   - {fileID: 5493377940581164969}
   - {fileID: 3155580520606539908}
@@ -96917,6 +96916,7 @@ GameObject:
   - component: {fileID: 8267751780057722071}
   - component: {fileID: 8267751780057722073}
   - component: {fileID: 8267751780057722072}
+  - component: {fileID: 8267751780057722074}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -97772,8 +97772,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8433488343627431314}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 270.6}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99244,6 +99244,27 @@ MonoBehaviour:
   DistanceOfContact: 130.591
   StartPosition: 130.093
   Turned: 0
+--- !u!65 &8267751780057722074
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5817394337742572761}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7280118, y: 1, z: 4.7774925}
+  m_Center: {x: -0.007991612, y: 0, z: -0.6837344}
 --- !u!224 &8271562218092790111
 RectTransform:
   m_ObjectHideFlags: 0

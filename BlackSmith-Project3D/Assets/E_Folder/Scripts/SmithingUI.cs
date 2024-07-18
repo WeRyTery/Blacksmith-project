@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class SmithingUI : MonoBehaviour
 {
-    [SerializeField] GameObject Close; // Button
-    [SerializeField] GameObject Next; // Button
     public E_CameraManagment CameraStateScript;
+    private Canvas smithingCanvas;
+
     private void Start()
     {
         E_EventBus.EnableSmithingMechanicUI += EnableSmithingMechanicUI;
+        smithingCanvas = gameObject.GetComponent<Canvas>();
     }
 
     public void CloseMechanicProcess()
@@ -19,13 +20,12 @@ public class SmithingUI : MonoBehaviour
         CameraStateScript.IsSmelting = false;
         CameraStateScript.IsSmiting = false;
         CameraStateScript.IsSharpening = false;
-        Close.SetActive(false);
-        Next.SetActive(false);
+
+        smithingCanvas.enabled = false;
     }
 
     public void EnableSmithingMechanicUI()
     {
-        Close.SetActive(true);
-        Next.SetActive(true);
+        smithingCanvas.enabled = true;
     }
 }

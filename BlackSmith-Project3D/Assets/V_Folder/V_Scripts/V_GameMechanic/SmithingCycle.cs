@@ -8,7 +8,7 @@ public class SmithingCycle : MonoBehaviour
 {
     [Header("UI")]
     public bool ButtonPressed;
-    [Space] 
+    [Space]
 
     [Header("Object stats")]
 
@@ -50,43 +50,81 @@ public class SmithingCycle : MonoBehaviour
 
     private void Update()
     {
+        //CASES: TRUE
         if (CameraStateScript.IsSmelting == true && ButtonPressed)
         {
             InstrumentToDisplay[0] = ObjectStats.InstrumentObject[0];
             MaterialToDisplay = ObjectStats.MaterialObject;
             MaterialToDisplay.SetActive(true);
-            TheSmeltingLogic();
+            TheSmeltingLogic(true);
             ButtonPressed = false;
         }
         else if (CameraStateScript.IsSharpening == true && ButtonPressed)
         {
-            TheSharpeningLogic();
+            TheSharpeningLogic(true);
             ButtonPressed = false;
         }
         else if (CameraStateScript.IsSmiting == true && ButtonPressed)
         {
-            TheSmitingLogic();
+            TheSmitingLogic(true);
             ButtonPressed = false;
+        }
+
+
+        //CASES: FALSE
+        if (CameraStateScript.IsSmelting == false)
+        {
+            TheSmeltingLogic(false);
+        }
+
+        if (CameraStateScript.IsSmiting == false)
+        {
+            TheSmitingLogic(false);
+        }
+
+        if (CameraStateScript.IsSharpening == false)
+        {
+            TheSharpeningLogic(false);
+        }
+    }
+
+
+    private void TheSmeltingLogic(bool startOrStop) // true == start, false == stop
+    {
+        if (startOrStop)
+        {
+            SmeltingScript.SmeltingStart();
         }
         else
         {
-            
+            SmeltingScript.enabled = false;
         }
     }
-    private void TheSmeltingLogic()
-    {
-        SmeltingScript.SmeltingStart();
-        
-    }
-    private void TheSmitingLogic()
-    {
-        smithing.enabled = true;
-    }
-    private void TheSharpeningLogic()
-    {
-        sharpening.enabled = true;
 
+    private void TheSmitingLogic(bool startOrStop)
+    {
+        if (startOrStop)
+        {
+            smithing.enabled = true;
+        }
+        else
+        {
+            smithing.enabled = false;
+        }
     }
+
+    private void TheSharpeningLogic(bool startOrStop)
+    {
+        if (startOrStop)
+        {
+            sharpening.enabled = true;
+        }
+        else
+        {
+            sharpening.enabled = false;
+        }
+    }
+
     public void PutObject()
     {
         ButtonPressed = true;

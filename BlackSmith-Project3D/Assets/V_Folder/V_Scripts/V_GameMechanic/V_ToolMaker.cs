@@ -7,11 +7,13 @@ using UnityEngine;
 public class V_ToolMaker : MonoBehaviour
 {
     [Header("Model Settings")]
+    [SerializeField] private GameObject SwordColliderHolder;
     [SerializeField] private GameObject[] Models;
     [SerializeField] private int[] LevelToChangeModel;
     [SerializeField] private int CurrentLevelOfModel;
     [SerializeField] private int CurrentModel;
     [Space]
+
     [Header("ClickSettings")]
     [SerializeField] private int ClicksMade;
     [SerializeField] private int[] ClicksAmountPerPower;
@@ -25,7 +27,7 @@ public class V_ToolMaker : MonoBehaviour
     [Header("Damege Settings")]
     [SerializeField] private int DamageOverall;
 
-    [Header("Damege Settings")] 
+    [Header("Damege Settings")]
 
     [SerializeField] private int[] DamagePerPower;
     [SerializeField] private float[] TimeToGetDamagePerPower;
@@ -40,20 +42,32 @@ public class V_ToolMaker : MonoBehaviour
     [Space]
     [Header("other Scripts")]
     public ToolStats WeaponStats;
+    private bool wasClickOnSword;
+    private BoxCollider swordCollider;
 
     private void Start()
     {
-        Models[0].active = true;
+        Models[0].SetActive(true);
+
+        WeaponStats = GetComponent<ToolStats>();
+        swordCollider = SwordColliderHolder.GetComponent<BoxCollider>();
     }
+
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && AlreadyClicked == false)
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        Physics.Raycast(ray, out hit, 100.0f); 
+        
+
+        if (Input.GetMouseButtonDown(0) && AlreadyClicked == false && hit.collider == swordCollider)
         {
             ButtonDown = true;
             StartHoldTime = Time.time;
             StartCoroutine("ClickHoldTime");
         }
-        if (Input.GetMouseButtonUp(0) && AlreadyClicked == false)
+        if (Input.GetMouseButtonUp(0) && AlreadyClicked == false && hit.collider == swordCollider)
         {
             ButtonDown = false;
             StopCoroutine("ClickHoldTime");
@@ -62,6 +76,7 @@ public class V_ToolMaker : MonoBehaviour
             AlreadyClicked = true;
             StartCoroutine("ClickCoolDown");
         }
+
     }
     void ReactionToClick()
     {
@@ -99,7 +114,7 @@ public class V_ToolMaker : MonoBehaviour
                     break;
                 }
             }
-            if(!DamageHasBeenMade)
+            if (!DamageHasBeenMade)
             {
                 WeaponStats.DamageOfATool += DamageAtFinish;
             }
@@ -107,22 +122,25 @@ public class V_ToolMaker : MonoBehaviour
             DamageHasBeenMade = false;
         }
 
-        if (CurrentLevelOfModel + 1> LevelToChangeModel.Length)
+        if (CurrentLevelOfModel + 1 > LevelToChangeModel.Length)
         {
             enabled = false;
         }
         else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
         {
-            Models[CurrentModel].active = false;
+            Debug.Log("Checkpoint");
+            Models[CurrentModel].SetActive(false);
             CurrentModel++;
 
-            Models[CurrentModel].active = true;
+            Models[CurrentModel].SetActive(true);
             CurrentLevelOfModel++;
 
+            Debug.Log("Checkpoint2");
             WeaponStats.StageOfATool = CurrentLevelOfModel;
+            Debug.Log("CheckPoint3");
 
             ClicksMade = 0;
-            
+            Debug.Log("Reseted");
         }
     }
     IEnumerator ClickHoldTime()
