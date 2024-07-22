@@ -26,12 +26,14 @@ public class NewWeapon : ItemData //item that's in process of forging
     public float Damage;
     public float Sharpness;
     public string Material;
+    public int Stage;
 
-    public NewWeapon(string material, string name, float damage, float sharpness, int index) : base(name, "NewWeapon", index)
+    public NewWeapon(string material, string name, int stage, float damage, float sharpness, int index) : base(name, "NewWeapon", index)
     {
         Damage = damage;
         Material = material;
         Sharpness = sharpness;
+        Stage = stage;
     }
 }
 
