@@ -221,6 +221,19 @@ public class InventoryManager : MonoBehaviour
             _temporaryIndexHandles++;
         }
     }
+    public bool WeaponReadyCheck(NewWeapon readyWeapon)
+    {
+        foreach (var weapon in _newWeapons)
+        {
+            if (weapon.ItemName == readyWeapon.ItemName && weapon.Stage == 4
+                // weapon.Material == readyWeapon.Material
+                )
+            {
+                return true;
+            } 
+        }
+        return false;
+    }
     public List<NewWeapon> GetWeaponsList()
     {
         return _newWeapons;
