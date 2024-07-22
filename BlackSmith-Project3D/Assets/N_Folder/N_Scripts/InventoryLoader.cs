@@ -38,6 +38,14 @@ public class InventoryLoader : MonoBehaviour
         }
         return slotsList;
     }
+    public InventoryManager GetInventory()
+    {
+        return _inventory;
+    }
+    public void SetInventory(InventoryManager inventory)
+    {
+        _inventory = inventory;
+    }
     private void DrawInventory()
     {
         //for (int i = 0; i < _slots.Count; i++)
@@ -52,7 +60,7 @@ public class InventoryLoader : MonoBehaviour
         //}
         foreach (var weapon in _inventory.GetWeaponsList())
         {
-            if (weapon != null)
+               if (weapon != null)
             {
                 _slots[weapon.Index].gameObject.SetActive(true);
             }
