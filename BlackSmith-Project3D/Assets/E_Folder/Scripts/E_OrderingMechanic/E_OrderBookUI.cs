@@ -21,6 +21,7 @@ public class E_OrderBookUI : MonoBehaviour
     // Scripts needed to finish order
     public WeaponRating weaponRatingScript;
     public E_OrderingLogic orderLogic;
+    public InventoryManager inventoryManager;
 
     private float weaponDamageState = 0;
     private float weaponRating = 0;
@@ -100,8 +101,15 @@ public class E_OrderBookUI : MonoBehaviour
 
     public void FinishCurrentOrder()
     {
+        int weaponDamagedState;
+        NewWeapon testWep = new NewWeapon("", "Sword", 4, 0, 0, 0);
 
-        // Check inventory, if( item valid ) Stage / type
+        if (inventoryManager.WeaponReadyCheck(testWep))
+        {
+            //weaponDamagedState;
+        }
+
+
         // case: true, weaponDamagedState = item.damage;
 
         int OrdersIndex = CurrentOrderSelected.currentIndex;

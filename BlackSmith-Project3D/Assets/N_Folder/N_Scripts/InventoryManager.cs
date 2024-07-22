@@ -236,7 +236,7 @@ public class InventoryManager : MonoBehaviour
     }
     public List<NewWeapon> GetWeaponsList()
     {
-        return _newWeapons;
+        return _newWeapons;      
     }
     public List<Metals> GetMetalsList() { 
         return _metals; 
@@ -250,7 +250,7 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Weapons:");
         foreach (var newWeapon in _newWeapons)
         {
-            Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.Damage + " - Number: " + newWeapon.Material + " " + newWeapon.Index);
+            Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.DamagedState + " - Number: " + newWeapon.Material + " " + newWeapon.Index);
         }
 
         Debug.Log("Materials:");
