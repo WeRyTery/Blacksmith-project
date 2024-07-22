@@ -12,22 +12,29 @@ public class InventoryTest : MonoBehaviour
         _inventory = GetComponent<InventoryManager>();
 
         // Add some items to the inventory
-        _inventory.AddItem(new NewWeapon("iron", "One_Hand", 50, 100));
-        _inventory.AddItem(new Metals("Iron Ore", 5));
-        _inventory.AddItem(new Handle("Wooden Handle", 2));
+        NewWeapon weapon = new NewWeapon("1", "One_Hand", 1, 50, 100, 10);
+        _inventory.AddItem(weapon);
+        _inventory.AddItem(new NewWeapon("2", "One_Hand", 1, 50, 100, 10));
+        _inventory.AddItem(new NewWeapon("3", "One_Hand", 1, 50, 100, 10));
+        _inventory.AddItem(new NewWeapon("4", "One_Hand", 1, 50, 100, 10));
+        _inventory.AddItem(new NewWeapon("5", "One_Hand", 1, 50, 100, 10));
+        _inventory.AddItem(new Metals("Iron Ore", 5, 10));
+        _inventory.AddItem(new Handle("Wooden Handle", 2, 10));
 
         // Print the inventory contents
         _inventory.PrintInventory();
 
         // Add more items to the inventory
-        _inventory.AddItem(new Metals("Iron Ore", 7));
-        _inventory.AddItem(new Handle("Wooden Handle", 10));
+        _inventory.AddItem(new Metals("Iron Ore", 7, 10));
+        _inventory.AddItem(new Handle("Wooden Handle", 10, 10));
 
         // Print the inventory contents again
         _inventory.PrintInventory();
 
         // Remove some items from the inventory
-        _inventory.RemoveItem(new Metals("Iron Ore", 3));
+        _inventory.RemoveItem(new Metals("Iron Ore", 3, 10));
+        _inventory.RemoveItem(weapon);
+        _inventory.AddItem(new NewWeapon("6", "One_Hand", 1, 50, 100, 10));
 
         // Print the inventory contents again
         _inventory.PrintInventory();
