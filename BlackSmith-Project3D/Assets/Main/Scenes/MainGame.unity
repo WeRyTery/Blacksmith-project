@@ -27715,6 +27715,7 @@ MonoBehaviour:
     type: 3}
   weaponRatingScript: {fileID: 0}
   orderLogic: {fileID: 0}
+  inventoryManager: {fileID: 668923192}
 --- !u!114 &668923188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94114,7 +94115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &1017397843216516277
 CanvasRenderer:
   m_ObjectHideFlags: 0

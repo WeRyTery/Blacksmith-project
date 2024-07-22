@@ -36,6 +36,7 @@ public class E_OrderBookUI : MonoBehaviour
     {
         weaponRatingScript = gameObject.GetComponent<WeaponRating>();
         orderLogic = gameObject.GetComponent<E_OrderingLogic>();
+        inventoryManager = gameObject.GetComponent<InventoryManager>();
     }
 
     private void Update()
@@ -71,7 +72,6 @@ public class E_OrderBookUI : MonoBehaviour
             {
                 OrderMenu.content.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0, 0);
             }
-
         }
 
     }
@@ -101,23 +101,30 @@ public class E_OrderBookUI : MonoBehaviour
 
     public void FinishCurrentOrder()
     {
-        int weaponDamagedState;
-        NewWeapon testWep = new NewWeapon("", "Sword", 4, 0, 0, 0);
+        NewWeapon finishedWeapon = inventoryManager.CreateNewWeapon();
 
-        if (inventoryManager.WeaponReadyCheck(testWep))
+        finishedWeapon.ItemName = "Sword";
+        finishedWeapon = inventoryManager.WeaponReadyCheck(finishedWeapon);
+
+        if (finishedWeapon != null)
         {
-            //weaponDamagedState;
+            weaponDamageState = finishedWeapon.DamagedState;
+
+        }
+        else
+        {
+            Debug.Log("Clients order is unfinished");
+            return;
         }
 
-
-        // case: true, weaponDamagedState = item.damage;
-
         int OrdersIndex = CurrentOrderSelected.currentIndex;
-        bool DidWeDestroyButton = false;
+        bool DidWeRemoveOrder = false;
 
         weaponRating = weaponRatingScript.RateWeapon(weaponDamageState);
+
+        Reputation.CheckWeaponRatingForReputation(weaponRating);
         Money.AddMoney(E_OrderingLogic.ordersList[OrdersIndex].budget);
-        Money.AddMoney(E_OrderingLogic.ordersList[OrdersIndex].budget);
+
 
         E_OrderIndex[] buttons = FindObjectsOfType<E_OrderIndex>();
 
@@ -131,12 +138,12 @@ public class E_OrderBookUI : MonoBehaviour
                 orderLogic.UpdateUIText();
 
                 E_OrderingLogic.ordersList.RemoveAt(OrdersIndex);
-                DidWeDestroyButton = true;
+                DidWeRemoveOrder = true;
                 break;
             }
         }
 
-        if (DidWeDestroyButton)
+        if (DidWeRemoveOrder)
         {
             foreach (E_OrderIndex button in buttons)
             {
@@ -150,6 +157,7 @@ public class E_OrderBookUI : MonoBehaviour
 
         FileHandler.SaveToJSON<E_OrdersDescription>(E_OrderingLogic.ordersList, "OrdersData.json");
     }
+
 
 
     public void loadExistingOrders()

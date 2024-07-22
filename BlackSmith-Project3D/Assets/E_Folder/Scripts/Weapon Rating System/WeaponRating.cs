@@ -38,9 +38,9 @@ public class WeaponRating : MonoBehaviour
         {
             return 5;
         }
-        else if (WeaponStarRating < 0)
+        else if (WeaponStarRating <= 1)
         {
-            return 0;
+            return 1;
         }
 
         return WeaponStarRating;
