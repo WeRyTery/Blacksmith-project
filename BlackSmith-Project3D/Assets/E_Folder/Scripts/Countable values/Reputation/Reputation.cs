@@ -21,7 +21,7 @@ public static class Reputation
     public static void SubtractReputation(int AmountToSubtract)
     {
         CurrentReputation -= AmountToSubtract;
-    }
+    }   
 
     public static bool IsReputationEnough(int GoalReputation)
     {

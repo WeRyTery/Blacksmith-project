@@ -18,10 +18,23 @@ public class E_OrderBookUI : MonoBehaviour
 
     private static int OrdersCount = 0;
 
+    // Scripts needed to finish order
+    public WeaponRating weaponRatingScript;
+    public E_OrderingLogic orderLogic;
+
+    private float weaponDamageState = 0;
+    private float weaponRating = 0;
+
     private void Awake()
     {
         E_EventBus.NewBookOrder += addNewOrderInBook;
         E_EventBus.LoadSavedData += loadExistingOrders;
+    }
+
+    private void Start()
+    {
+        weaponRatingScript = gameObject.GetComponent<WeaponRating>();
+        orderLogic = gameObject.GetComponent<E_OrderingLogic>();
     }
 
     private void Update()
@@ -62,6 +75,7 @@ public class E_OrderBookUI : MonoBehaviour
 
     }
 
+
     public void CloseOrdersBook()
     {
         BookCanvas.gameObject.SetActive(false);
@@ -79,11 +93,56 @@ public class E_OrderBookUI : MonoBehaviour
         buttonRect.anchoredPosition = new Vector3(buttonRect.anchoredPosition.x, newYButtonPos, 0); // Changes position of our button by adding space between them.
 
 
-        newButton.GetComponent<E_OrderIndex>().SetOrderIndex(OrdersCount); // Sets unique index to each order button, so that we could distinguish them one from another
-        OrdersCount++;
+        newButton.GetComponent<E_OrderIndex>().SetOrderIndex(E_OrderingLogic.ordersList.Count - 1); // Sets unique index to each order button, so that we could distinguish them one from another
 
         newButton.GetComponentInChildren<TextMeshProUGUI>().text = "Commision for a new " + E_OrderingLogic.finalOrderMaterial + " forged " + E_OrderingLogic.finalOrderWeaponType; // Changes text of our buttons
     }
+
+    public void FinishCurrentOrder()
+    {
+
+        // Check inventory, if( item valid ) Stage / type
+        // case: true, weaponDamagedState = item.damage;
+
+        int OrdersIndex = CurrentOrderSelected.currentIndex;
+        bool DidWeDestroyButton = false;
+
+        weaponRating = weaponRatingScript.RateWeapon(weaponDamageState);
+        Money.AddMoney(E_OrderingLogic.ordersList[OrdersIndex].budget);
+        Money.AddMoney(E_OrderingLogic.ordersList[OrdersIndex].budget);
+
+        E_OrderIndex[] buttons = FindObjectsOfType<E_OrderIndex>();
+
+        foreach (E_OrderIndex button in buttons)
+        {
+            if (button.GetOrderIndex() == OrdersIndex)
+            {
+                Debug.Log(button.GetOrderIndex());
+
+                Destroy(button.gameObject);
+                orderLogic.UpdateUIText();
+
+                E_OrderingLogic.ordersList.RemoveAt(OrdersIndex);
+                DidWeDestroyButton = true;
+                break;
+            }
+        }
+
+        if (DidWeDestroyButton)
+        {
+            foreach (E_OrderIndex button in buttons)
+            {
+                if (button.GetOrderIndex() > OrdersIndex)
+                {
+                    Debug.Log("Changed " + button.GetOrderIndex() + " to: " + (button.GetOrderIndex() - 1));
+                    button.SetOrderIndex(button.GetOrderIndex() - 1);
+                }
+            }
+        }
+
+        FileHandler.SaveToJSON<E_OrdersDescription>(E_OrderingLogic.ordersList, "OrdersData.json");
+    }
+
 
     public void loadExistingOrders()
     {

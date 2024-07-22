@@ -11,7 +11,7 @@ public static class Money
         return CurrentMoney;
     }
 
-    public static void AddRMoney(int AmountToAdd)
+    public static void AddMoney(int AmountToAdd)
     {
         CurrentMoney += AmountToAdd;
     }

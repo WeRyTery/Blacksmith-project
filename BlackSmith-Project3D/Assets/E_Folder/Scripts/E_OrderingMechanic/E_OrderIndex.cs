@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ public class E_OrderIndex : MonoBehaviour
     private string _material;
     private int _budget;
 
+    private int _selectedOrderIndex;
+
     private void Start()
     {
         Weapon = GameObject.FindGameObjectWithTag("WeaponText").GetComponent<TextMeshProUGUI>();
@@ -28,19 +31,23 @@ public class E_OrderIndex : MonoBehaviour
         return orderID;
     }
 
-    public void SetOrderIndex(int Index)
+    public void SetOrderIndex(int id)
     {
-        orderID = Index;
+        orderID = id;
     }
 
     public void ShowOrderDetails()
     {
-        _weaponType = E_OrderingLogic.ordersList[gameObject.GetComponent<E_OrderIndex>().GetOrderIndex()].weaponType; // Getting all variables from our List, that was created in E_OrderingLogic
-        _material = E_OrderingLogic.ordersList[gameObject.GetComponent<E_OrderIndex>().GetOrderIndex()].material;
-        _budget = E_OrderingLogic.ordersList[gameObject.GetComponent<E_OrderIndex>().GetOrderIndex()].budget;
+        _selectedOrderIndex = gameObject.GetComponent<E_OrderIndex>().GetOrderIndex();
+
+        _weaponType = E_OrderingLogic.ordersList[_selectedOrderIndex].weaponType; // Getting all variables from our List, that was created in E_OrderingLogic
+        _material = E_OrderingLogic.ordersList[_selectedOrderIndex].material;
+        _budget = E_OrderingLogic.ordersList[_selectedOrderIndex].budget;
 
         Weapon.text = _weaponType;
         Material.text = _material;
         Budget.text = _budget.ToString();
+
+        CurrentOrderSelected.currentIndex = _selectedOrderIndex; // We save selected orders index in another variable to be able manipulate our list from another scripts
     }
 }

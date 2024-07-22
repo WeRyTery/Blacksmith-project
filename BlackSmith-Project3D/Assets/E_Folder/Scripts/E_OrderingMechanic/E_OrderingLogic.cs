@@ -7,8 +7,8 @@ public class E_OrderingLogic : MonoBehaviour
     [SerializeField] TextMeshProUGUI DialoguesText;
     [SerializeField] TextMeshProUGUI Weapon;
     [SerializeField] TextMeshProUGUI Material;
-    [SerializeField] TextMeshProUGUI Budget;
-    [SerializeField] string dataFilename;
+    [SerializeField] TextMeshProUGUI Budget; // BUDGET == REWARD (I WAS OM SOMETHING WHEN CREATED THIS VAR)
+    [SerializeField] string dataFilename = "OrdersData.json";
 
     private int commonTextVariationsAmount = 7; // normal and cheeky dialogues variations
     private int rareTextVariationsAmount = 3; // elegant dialogues variations
@@ -21,7 +21,7 @@ public class E_OrderingLogic : MonoBehaviour
     private int materialIndexHolder;
     private int[] midWeaponBudgetRange = { 100, 400 };
     private int[] lightWeaponBudgetRange = { 50, 150 };
-    
+
 
     public static int finalOrderBudget;
     public static string finalOrderWeaponType;
@@ -136,19 +136,28 @@ public class E_OrderingLogic : MonoBehaviour
         }
     }
 
-    private void SaveOrderDescriptionList()
+    public void SaveOrderDescriptionList()
     {
-        ordersList.Add(new E_OrdersDescription (finalOrderMaterial, finalOrderWeaponType, finalOrderBudget));
+        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget));
 
         FileHandler.SaveToJSON<E_OrdersDescription>(ordersList, dataFilename);
     }
 
-    private void UpdateUIText()
+    public void UpdateUIText()
     {
         DialoguesText.text = finalDialogueText;
 
         Weapon.text = finalOrderWeaponType;
         Material.text = finalOrderMaterial;
-        Budget.text = finalOrderBudget.ToString();
+
+        if (finalOrderBudget == 0)
+        {
+            Budget.text = "";
+        }
+        else
+        {
+            Budget.text = finalOrderBudget.ToString();
+        }
+
     }
 }
