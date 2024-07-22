@@ -1655,7 +1655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b183f13748578e40aa61a229151e7e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventoryContainer: {fileID: 807584010}
+  _inventoryContainer: {fileID: 807584009}
 --- !u!1 &1067441971
 GameObject:
   m_ObjectHideFlags: 0
@@ -2357,6 +2357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inventoryPanel: {fileID: 1103190218}
+  _gameManager: {fileID: 959761619}
 --- !u!1 &1538375506
 GameObject:
   m_ObjectHideFlags: 0

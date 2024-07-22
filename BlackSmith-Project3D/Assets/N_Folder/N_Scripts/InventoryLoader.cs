@@ -14,9 +14,14 @@ public class InventoryLoader : MonoBehaviour
     {
         _inventory = GetComponent<InventoryManager>();
 
-        LoadItems();
-
         _slots = GetSlots();
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log("Inventory opened");
+
+        LoadItems();
 
         DrawInventory();
     }
@@ -35,11 +40,41 @@ public class InventoryLoader : MonoBehaviour
     }
     private void DrawInventory()
     {
-        for (int i = 0; i < _slots.Count; i++)
+        //for (int i = 0; i < _slots.Count; i++)
+        //{
+        //    if (_slots[i] != null)
+        //    {
+
+        //    }
+        //    // _slots[i].GetComponent<Image>().image;
+        //    //_slots[i].GetComponent<Image>().color = new Color(0, 0, 0, 100);
+        //    //_slots[i].GetComponent<Image>().sprite = _inventoryContainer.GetComponent<Image>().sprite;
+        //}
+        foreach (var weapon in _inventory.GetWeaponsList())
         {
-            // _slots[i].GetComponent<Image>().image;
-            _slots[i].GetComponent<Image>().color = new Color(0, 0, 0, 100);
-            _slots[i].GetComponent<Image>().sprite = _inventoryContainer.GetComponent<Image>().sprite;
+            if (weapon != null)
+            {
+                _slots[weapon.Index].gameObject.SetActive(true);
+            }
         }
+        foreach (var metal in _inventory.GetMetalsList())
+        {
+            if (metal != null)
+            {
+                _slots[metal.Index + 5].gameObject.SetActive(true);
+            }
+        }
+        foreach (var handle in _inventory.GetHandleList())
+        {
+            if (handle != null)
+            {
+                _slots[handle.Index + 10].gameObject.SetActive(true);
+            }
+        }
+    }
+    private void OnDisable()
+    {
+        Debug.Log("Inventory closed");
+        //should save into a .json file
     }
 }
