@@ -21,6 +21,8 @@ public class E_OrderBookUI : MonoBehaviour
     // Scripts needed to finish order
     public WeaponRating weaponRatingScript;
     public E_OrderingLogic orderLogic;
+    public InventoryLoader inventoryLoader;
+
     public InventoryManager inventoryManager;
 
     private float weaponDamageState = 0;
@@ -36,7 +38,9 @@ public class E_OrderBookUI : MonoBehaviour
     {
         weaponRatingScript = gameObject.GetComponent<WeaponRating>();
         orderLogic = gameObject.GetComponent<E_OrderingLogic>();
-        inventoryManager = gameObject.GetComponent<InventoryManager>();
+        inventoryLoader = gameObject.GetComponent<InventoryLoader>();
+
+        inventoryManager = inventoryLoader.GetInventory();
     }
 
     private void Update()
@@ -109,7 +113,7 @@ public class E_OrderBookUI : MonoBehaviour
         if (finishedWeapon != null)
         {
             weaponDamageState = finishedWeapon.DamagedState;
-
+            inventoryManager.RemoveItem(finishedWeapon);
         }
         else
         {
@@ -132,8 +136,6 @@ public class E_OrderBookUI : MonoBehaviour
         {
             if (button.GetOrderIndex() == OrdersIndex)
             {
-                Debug.Log(button.GetOrderIndex());
-
                 Destroy(button.gameObject);
                 orderLogic.UpdateUIText();
 
