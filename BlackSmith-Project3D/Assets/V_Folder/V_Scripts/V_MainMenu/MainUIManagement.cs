@@ -31,10 +31,7 @@ public class MainUIManagement : MonoBehaviour
         ActivatePanel(1);
     }
 
-    public void OpenKeyBindSettings()
-    {
-        ActivatePanel(2);
-    }
+   
 
     private void ActivatePanel(int index)
     {
