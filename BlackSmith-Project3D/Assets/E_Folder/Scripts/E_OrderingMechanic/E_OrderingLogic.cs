@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class E_OrderingLogic : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class E_OrderingLogic : MonoBehaviour
     public static int finalOrderBudget;
     public static string finalOrderWeaponType;
     public static string finalOrderMaterial;
+
+    [SerializeField] int MaxSimultaneousOrders = 3;
+    private int currentNumberOfOrders = 0;
 
     public static List<E_OrdersDescription> ordersList = new List<E_OrdersDescription>();
 
@@ -64,6 +68,8 @@ public class E_OrderingLogic : MonoBehaviour
     private void Awake()
     {
         ordersList = FileHandler.ReadListFromJSON<E_OrdersDescription>(dataFilename);
+
+        currentNumberOfOrders = ordersList.Last().currentNumberOfOrders;
     }
 
     private void Start()
@@ -73,11 +79,19 @@ public class E_OrderingLogic : MonoBehaviour
 
     public void NewCustomerOrder() // Calls all functions needed to choose weapon type, budget and dialogue, after that transfers data into text window in the game scene
     {
-        DialogueTypeChooser();
-        OrderDescriptionChooser();
-        SaveOrderDescriptionList();
-        UpdateUIText();
-        E_EventBus.NewBookOrder?.Invoke();
+        if (currentNumberOfOrders < MaxSimultaneousOrders)
+        {
+            DialogueTypeChooser();
+            OrderDescriptionChooser();
+            SaveOrderDescriptionList();
+            UpdateUIText();
+            E_EventBus.NewBookOrder?.Invoke();
+            currentNumberOfOrders++;
+        }
+        else
+        {
+            Debug.Log("Max number of simultaneous orders has been reached");
+        }
     }
 
     private void DialogueTypeChooser() // Chooses dialogue that a customer will say
@@ -138,7 +152,7 @@ public class E_OrderingLogic : MonoBehaviour
 
     public void SaveOrderDescriptionList()
     {
-        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget));
+        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget, currentNumberOfOrders));
 
         FileHandler.SaveToJSON<E_OrdersDescription>(ordersList, dataFilename);
     }
