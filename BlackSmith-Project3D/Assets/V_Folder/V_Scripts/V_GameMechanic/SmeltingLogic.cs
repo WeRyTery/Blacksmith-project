@@ -18,10 +18,20 @@ public class SmeltingLogic : MonoBehaviour
 
     IEnumerator StartSmelting()
     {
+        ControlOfMechanic.Materials[ControlOfMechanic.MaterialIndex].SetActive(true);
+
         yield return new WaitForSeconds(TimeToSmeltMaterial);
+<<<<<<< Updated upstream
         FurnaceLights.SetActive(false);
         ControlOfMechanic.MaterialToDisplay.SetActive(false);
         ControlOfMechanic.InstrumentToDisplay[0].SetActive(true);
+=======
+
+        ControlOfMechanic.Materials[ControlOfMechanic.MaterialIndex].SetActive(false);
+
+        ControlOfMechanic.Instruments[0].SetActive(true);
+        ControlOfMechanic.Instruments[0].transform.position = ControlOfMechanic.Positions[0].transform.position;
+>>>>>>> Stashed changes
         Debug.Log("Smelting");
 
     }

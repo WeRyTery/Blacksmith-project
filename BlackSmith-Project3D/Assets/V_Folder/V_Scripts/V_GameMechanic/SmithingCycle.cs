@@ -3,130 +3,120 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class SmithingCycle : MonoBehaviour
 {
     [Header("UI")]
-    public bool ButtonPressed;
-    [Space]
+    [SerializeField] private GameObject SmeltingCanvas;
+    [SerializeField] private GameObject SmeltingProgressButton;
+    [SerializeField] private GameObject SmeltingInventory;
 
-    [Header("Object stats")]
-
-    [Space]
-
-    [SerializeField] private int TypeOfObject;
-    [SerializeField] private int SmeltingMaterial;
-    [SerializeField] private int ObjectSharpening;
-    [SerializeField] private int ObjectDamage;
-    [SerializeField] private int ObjectMaterial;
-    [Space]
-
-
-    [Header("Display objects")]
-    public GameObject[] InstrumentToDisplay = new GameObject[2];//0 = 1 level of instrument, 1 = 4 level of instrument
-    public GameObject[] PositionsInstrumentToDisplay = new GameObject[3];//0 = Smelting, 1 = Smithing, 2 = Sharpening
-    public GameObject MaterialToDisplay;
-
-
-    [Header("Sword & scripts")]
-    [SerializeField] private GameObject sword;
+    [Header("Scripts")]
     public V_ToolMaker smithing;
     public ControlsForSharpening sharpening;
-    [Space]
-
-
-    [Header("Other")]
-    public TestHolderSCriptForObjject ObjectStats;
     public SmeltingLogic SmeltingScript;
     public E_CameraManagment CameraStateScript;
+    [Header("PlayerInput")]
+    [SerializeField] private bool PlayerChosedMaterial = false;
+    [SerializeField] private bool PlayerStartedSmelting = false;
+    [Header("IndexsForObjects")]
+    public int MaterialIndex;
+    [Header("PositionsForObjects")]
+    public GameObject[] Positions = new GameObject[3];
 
-    private void Start()
-    {
-        sharpening = sword.GetComponentInChildren<ControlsForSharpening>();
-        smithing = gameObject.GetComponent<V_ToolMaker>();
-    }
-
-
+    [Header("ObjectsForDisplay")]
+    public GameObject[] Materials = new GameObject[3];
+    public GameObject[] Instruments = new GameObject[2];
 
     private void Update()
     {
-        //CASES: TRUE
-        if (CameraStateScript.IsSmelting == true && ButtonPressed)
+        if(CameraStateScript.IsSmelting == true)
         {
-            InstrumentToDisplay[0] = ObjectStats.InstrumentObject[0];
-            MaterialToDisplay = ObjectStats.MaterialObject;
-            MaterialToDisplay.SetActive(true);
-            TheSmeltingLogic(true);
-            ButtonPressed = false;
-        }
-        else if (CameraStateScript.IsSharpening == true && ButtonPressed)
-        {
-            TheSharpeningLogic(true);
-            ButtonPressed = false;
-        }
-        else if (CameraStateScript.IsSmiting == true && ButtonPressed)
-        {
-            TheSmitingLogic(true);
-            ButtonPressed = false;
-        }
+            SmeltingCanvas.SetActive(true);
 
-
-        //CASES: FALSE
-        if (CameraStateScript.IsSmelting == false)
-        {
-            TheSmeltingLogic(false);
-        }
-
-        if (CameraStateScript.IsSmiting == false)
-        {
-            TheSmitingLogic(false);
-        }
-
-        if (CameraStateScript.IsSharpening == false)
-        {
-            TheSharpeningLogic(false);
+            if(PlayerChosedMaterial == true)
+            { 
+                SmeltingInventory.SetActive(false);
+                SmeltingProgressButton.SetActive(true);
+            }
+            else
+            {
+                SmeltingInventory.SetActive(true);
+            }
         }
     }
 
 
     private void TheSmeltingLogic(bool startOrStop) // true == start, false == stop
     {
+
         if (startOrStop)
         {
-            SmeltingScript.SmeltingStart();
+            
+            
         }
         else
         {
+           
             SmeltingScript.enabled = false;
         }
     }
 
     private void TheSmitingLogic(bool startOrStop)
     {
+
         if (startOrStop)
         {
+            
             smithing.enabled = true;
         }
         else
         {
+          
             smithing.enabled = false;
         }
     }
 
     private void TheSharpeningLogic(bool startOrStop)
     {
+
         if (startOrStop)
         {
+           
             sharpening.enabled = true;
         }
         else
         {
+            
             sharpening.enabled = false;
         }
     }
 
-    public void PutObject()
+    public void Exit()
     {
-        ButtonPressed = true;
+
     }
+    public void ChoseSlotForSmelting(int Index)
+    {
+        PlayerChosedMaterial = true;
+        MaterialIndex = Index;
+    } 
+    public void ProgressButtonSmelting()
+    {
+        if(PlayerStartedSmelting == false)
+        {
+            PlayerStartedSmelting = true;
+            SmeltingScript.SmeltingStart();
+        }
+        else
+        {
+            PlayerChosedMaterial = false;
+            SmeltingProgressButton.SetActive(false);
+            Instruments[0].SetActive(false);
+            E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
+            PlayerStartedSmelting = false;
+        }
+    }
+
 }

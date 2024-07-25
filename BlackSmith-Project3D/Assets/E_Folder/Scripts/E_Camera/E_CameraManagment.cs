@@ -27,6 +27,7 @@ public class E_CameraManagment : MonoBehaviour
      public bool IsSmiting = false;
      public bool IsSmelting = false;
      public bool IsSharpening = false;
+     
 
 
     private CinemachineBrain brain;
@@ -83,7 +84,7 @@ public class E_CameraManagment : MonoBehaviour
                     break;
 
                 case "StartSmithing":
-                    EnableSmithingCamera();
+                    EnableSmithingCamera(); 
                     IsSmiting = true;
                     break;
 
@@ -281,7 +282,9 @@ public class E_CameraManagment : MonoBehaviour
     public void SetCamerasBackAfterSmithingMechanic()
     {
         ResetAllCamerasSettings();
-
+        IsSmelting = false;
+        IsSmiting = false;
+        IsSharpening = false;
         playerMovementScript.enabled = true;
         StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
     }
