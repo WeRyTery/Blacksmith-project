@@ -7,7 +7,10 @@ using UnityEngine;
 public class SmeltingLogic : MonoBehaviour
 {
     [SerializeField] GameObject FurnaceLights;
+    
+    Renderer renderer;
     [SerializeField] private float TimeToSmeltMaterial = 5f;
+
     public SmithingCycle ControlOfMechanic;
 
     public void SmeltingStart()
@@ -18,17 +21,16 @@ public class SmeltingLogic : MonoBehaviour
 
     IEnumerator StartSmelting()
     {
-        ControlOfMechanic.Materials[ControlOfMechanic.MaterialIndex].SetActive(true);
+        ControlOfMechanic.MaterialGameObject.SetActive(true);
+        renderer = ControlOfMechanic.MaterialGameObject.GetComponent<Renderer>();
+        renderer.material = ControlOfMechanic.MaterialsC[ControlOfMechanic.MaterialIndex];
 
         yield return new WaitForSeconds(TimeToSmeltMaterial);
 
         FurnaceLights.SetActive(false);
-        ControlOfMechanic.Materials[ControlOfMechanic.MaterialIndex].SetActive(false);
-        ControlOfMechanic.Instruments[0].SetActive(true);
-
-
-        ControlOfMechanic.Materials[ControlOfMechanic.MaterialIndex].SetActive(false);
-
+        ControlOfMechanic.MaterialGameObject.SetActive(false);
+        renderer = ControlOfMechanic.Instruments[0].GetComponent<Renderer>();
+        renderer.material = ControlOfMechanic.MaterialsC[ControlOfMechanic.MaterialIndex];
         ControlOfMechanic.Instruments[0].SetActive(true);
         ControlOfMechanic.Instruments[0].transform.position = ControlOfMechanic.Positions[0].transform.position;
         Debug.Log("Smelting");
