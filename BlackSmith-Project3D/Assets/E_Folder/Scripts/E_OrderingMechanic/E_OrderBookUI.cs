@@ -30,7 +30,7 @@ public class E_OrderBookUI : MonoBehaviour
 
     private void Awake()
     {
-        E_EventBus.NewBookOrder += addNewOrderInBook;
+        E_EventBus.NewOrder += addNewOrderInBook;
         E_EventBus.LoadSavedData += loadExistingOrders;
     }
 
@@ -114,6 +114,8 @@ public class E_OrderBookUI : MonoBehaviour
         {
             weaponDamageState = finishedWeapon.DamagedState;
             inventoryManager.RemoveItem(finishedWeapon);
+
+            orderLogic.currentNumOfSimultaneousOrders--;
         }
         else
         {

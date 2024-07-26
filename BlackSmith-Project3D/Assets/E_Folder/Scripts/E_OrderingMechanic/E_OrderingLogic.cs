@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using System.Collections;
 
 public class E_OrderingLogic : MonoBehaviour
 {
@@ -11,25 +12,37 @@ public class E_OrderingLogic : MonoBehaviour
     [SerializeField] TextMeshProUGUI Budget; // BUDGET == REWARD (I WAS OM SOMETHING WHEN CREATED THIS VAR)
     [SerializeField] string dataFilename = "OrdersData.json";
 
+    //TextVariations
     private int commonTextVariationsAmount = 7; // normal and cheeky dialogues variations
     private int rareTextVariationsAmount = 3; // elegant dialogues variations
 
+    //Dialogue windows
     private int dialogueTypeIndexHolder;
     private int dialogueIndexHolder;
     private string finalDialogueText;
 
+    //Weapon stats 
     private int weaponTypeIndexHolder;
     private int materialIndexHolder;
     private int[] midWeaponBudgetRange = { 100, 400 };
     private int[] lightWeaponBudgetRange = { 50, 150 };
 
-
+    //Final order conditions
     public static int finalOrderBudget;
     public static string finalOrderWeaponType;
     public static string finalOrderMaterial;
 
-    [SerializeField] int MaxSimultaneousOrders = 3;
-    private int currentNumberOfOrders = 0;
+    //Order settings
+    [SerializeField] int MaxOrdersInOneGameDay = 3;
+    [SerializeField] int MinOrdersInOneGameDay = 1;
+    public int currentDayNumOfOrders;
+
+    [SerializeField] int MaxSimultaneousOrders = 5;
+    public int currentNumOfSimultaneousOrders = 0;
+
+    //Order settings of current day
+    private int currentDayOrdersAmount;
+    private bool OrdersCoroutineBeenStartToday;
 
     public static List<E_OrdersDescription> ordersList = new List<E_OrdersDescription>();
 
@@ -67,31 +80,67 @@ public class E_OrderingLogic : MonoBehaviour
 
     private void Awake()
     {
-        ordersList = FileHandler.ReadListFromJSON<E_OrdersDescription>(dataFilename);
+        try
+        {
+            ordersList = FileHandler.ReadListFromJSON<E_OrdersDescription>(dataFilename);
 
-        currentNumberOfOrders = ordersList.Last().currentNumberOfOrders;
+            currentNumOfSimultaneousOrders = ordersList.Last().currentNumberOfOrders;
+        }
+        catch { }
     }
 
     private void Start()
     {
+        E_EventBus.NewDay += NewDay;
+
         E_EventBus.LoadSavedData?.Invoke();
     }
 
+    private void Update()
+    {
+        if (CanWeStartNewOrder() == true && OrdersCoroutineBeenStartToday == false)
+        {
+            StartCoroutine(GenerateOrders());
+            OrdersCoroutineBeenStartToday = true;
+        }
+
+        if (CanWeStartNewOrder() == false)
+        {
+            StopCoroutine(GenerateOrders());
+        }
+    }
+
+
     public void NewCustomerOrder() // Calls all functions needed to choose weapon type, budget and dialogue, after that transfers data into text window in the game scene
     {
-        if (currentNumberOfOrders < MaxSimultaneousOrders)
+        if (CanWeStartNewOrder())
         {
             DialogueTypeChooser();
             OrderDescriptionChooser();
             SaveOrderDescriptionList();
             UpdateUIText();
-            E_EventBus.NewBookOrder?.Invoke();
-            currentNumberOfOrders++;
+
+            E_EventBus.NewOrder?.Invoke();
+
+            currentDayNumOfOrders++;
+            currentNumOfSimultaneousOrders++;
         }
-        else
+    }
+
+    private bool CanWeStartNewOrder()
+    {
+        int CurrentGameHour = TimeManager.GetCurrentTime(1);
+
+        if (CurrentGameHour > 6 && CurrentGameHour < 22 && currentDayNumOfOrders < MaxOrdersInOneGameDay)
         {
-            Debug.Log("Max number of simultaneous orders has been reached");
+            if (currentNumOfSimultaneousOrders < MaxSimultaneousOrders)
+            {
+                return true;
+            }
+            return false;
         }
+
+        return false;
     }
 
     private void DialogueTypeChooser() // Chooses dialogue that a customer will say
@@ -152,7 +201,7 @@ public class E_OrderingLogic : MonoBehaviour
 
     public void SaveOrderDescriptionList()
     {
-        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget, currentNumberOfOrders));
+        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget, currentNumOfSimultaneousOrders));
 
         FileHandler.SaveToJSON<E_OrdersDescription>(ordersList, dataFilename);
     }
@@ -173,5 +222,28 @@ public class E_OrderingLogic : MonoBehaviour
             Budget.text = finalOrderBudget.ToString();
         }
 
+    }
+
+    private void NewDay()
+    {
+        currentDayNumOfOrders = 0;
+        OrdersCoroutineBeenStartToday = false;
+    }
+
+    IEnumerator GenerateOrders()
+    {
+        currentDayOrdersAmount = 5;
+
+        while (currentDayOrdersAmount > 0)
+        {
+            int currentHour = TimeManager.GetCurrentTime(1);
+            int newOrderInterval = Random.Range(1, 4); // Hour interval between new orders
+
+            // Wait until the current time is greater than the target time
+            yield return new WaitUntil(() => TimeManager.GetCurrentTime(1) >= currentHour + newOrderInterval);
+
+            NewCustomerOrder();
+            currentDayOrdersAmount--;
+        }
     }
 }
