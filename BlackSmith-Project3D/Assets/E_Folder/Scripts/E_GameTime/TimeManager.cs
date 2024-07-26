@@ -20,10 +20,15 @@ public class TimeManager : MonoBehaviour
     [SerializeField, Range(0, 24)] private float TimeOfDay;
     [SerializeField, Range(0, 24)] private int HourOfDay;
     [SerializeField, Range(0, 60)] private int MinuteOfHour;
+    [SerializeField] private int dayNumber; // CURRENTLY UNVIEWABLE BY PLAYER
 
     [SerializeField] TextMeshProUGUI CurrentTimeText;
 
     private float minuteHandler; // To make time control through inspector smoother
+
+    //STATIC VAR FOR OTHER SCRIPTS
+    private static int _hourOfDay; 
+    private static int _minuteOfHour;
 
     public static List<TimeDataPreset> timeDataList = new List<TimeDataPreset>();
 
@@ -59,13 +64,20 @@ public class TimeManager : MonoBehaviour
 
             if (HourOfDay >= 24)
             {
+                Debug.Log("new day");
                 HourOfDay = 0;
+                dayNumber++;
+                E_EventBus.NewDay?.Invoke();
             }
 
             TimeOfDay = HourOfDay + (MinuteOfHour / RealSecondsInGameHour);
             TimeOfDay %= 24;
             UpdateLighting(TimeOfDay / 24f);
             UpdateTimeUI();
+
+            //Static var for other scripts below
+            _hourOfDay = HourOfDay;
+            _minuteOfHour = MinuteOfHour;
         }
         else
         {
@@ -123,7 +135,7 @@ public class TimeManager : MonoBehaviour
     {
         Debug.Log("Saving time...");
         timeDataList.Clear();
-        timeDataList.Add(new TimeDataPreset(TimeOfDay, HourOfDay, MinuteOfHour));
+        timeDataList.Add(new TimeDataPreset(TimeOfDay, HourOfDay, MinuteOfHour, dayNumber));
 
         FileHandler.SaveToJSON<TimeDataPreset>(timeDataList, DataPath);
         Debug.Log("Time saved");
@@ -144,9 +156,27 @@ public class TimeManager : MonoBehaviour
             TimeOfDay = timeDataList[timeDataList.Count - 1].DayTime;
             HourOfDay = timeDataList[timeDataList.Count - 1].DayHour;
             MinuteOfHour = timeDataList[timeDataList.Count - 1].DayMinute;
+            dayNumber = timeDataList[timeDataList.Count - 1].DayNumber;
             Debug.Log("Time loaded");
         }
 
+    }
+
+    public static int GetCurrentTime (int HourOrMinute)
+    {
+        if (HourOrMinute == 1)
+        {
+            return _hourOfDay;
+        }
+        else if (HourOrMinute == 2)
+        {
+            return _minuteOfHour;
+        }
+        else
+        {
+            Debug.Log("Error, Hour or Minute index stated were incorect");
+            return 0;
+        }
     }
 
     private void OnApplicationQuit()
