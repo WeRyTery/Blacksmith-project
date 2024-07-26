@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.6595569, g: 0.7383968, b: 0.7467317, a: 1}
+  m_FogColor: {r: 0.6948937, g: 0.728179, b: 0.7015122, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.81488913, g: 0.9440853, b: 0.9252806, a: 1}
+  m_AmbientSkyColor: {r: 0.81474817, g: 0.9439062, b: 0.9252435, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17387763, g: 0.21740907, b: 0.29956615, a: 1}
+  m_IndirectSpecularColor: {r: 0.17597452, g: 0.22022094, b: 0.30254966, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -28444,7 +28444,11 @@ MonoBehaviour:
   Material: {fileID: 1543961049}
   Budget: {fileID: 461990588}
   dataFilename: OrdersData.json
-  MaxSimultaneousOrders: 3
+  MaxOrdersInOneGameDay: 3
+  MinOrdersInOneGameDay: 1
+  currentDayNumOfOrders: 0
+  MaxSimultaneousOrders: 5
+  currentNumOfSimultaneousOrders: 0
 --- !u!114 &668923187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28495,9 +28499,10 @@ MonoBehaviour:
   DataPath: TimeDataSaver.json
   RealSecondsInGameHour: 60
   SaveTimeDataEveryInSeconds: 600
-  TimeOfDay: 11.1
-  HourOfDay: 12
-  MinuteOfHour: 12
+  TimeOfDay: 10.416667
+  HourOfDay: 10
+  MinuteOfHour: 25
+  dayNumber: 32
   CurrentTimeText: {fileID: 392290421}
 --- !u!4 &668923190
 Transform:
@@ -80892,7 +80897,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859119717}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.053957622, y: -0.7823286, z: 0.6167381, w: 0.06844493}
+  m_LocalRotation: {x: 0.047627814, y: -0.8342935, z: 0.544388, w: 0.07299127}
   m_LocalPosition: {x: 4.372841, y: 3, z: 119.50921}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -80933,7 +80938,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.7643611, g: 0.7025287, b: 0.7025287, a: 1}
+  m_Color: {r: 0.7642076, g: 0.7027815, b: 0.7027815, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
