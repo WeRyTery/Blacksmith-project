@@ -10,7 +10,7 @@ public class V_ToolMaker : MonoBehaviour
     [SerializeField] private GameObject SwordColliderHolder;
     [SerializeField] private GameObject[] Models;
     [SerializeField] private int[] LevelToChangeModel;
-    [SerializeField] private int CurrentLevelOfModel;
+    public int CurrentLevelOfModel;
     [SerializeField] private int CurrentModel;
     [Space]
 
@@ -44,10 +44,13 @@ public class V_ToolMaker : MonoBehaviour
     public ToolStats WeaponStats;
     private bool wasClickOnSword;
     private BoxCollider swordCollider;
-
+    public SmithingCycle smitingCycle;
+    Renderer renderer;
     private void Start()
     {
         Models[0].SetActive(true);
+        renderer = Models[0].GetComponent<Renderer>();
+        renderer.material = smitingCycle.MaterialsC[smitingCycle.MaterialIndex];
 
         WeaponStats = GetComponent<ToolStats>();
         swordCollider = SwordColliderHolder.GetComponent<BoxCollider>();
@@ -122,10 +125,7 @@ public class V_ToolMaker : MonoBehaviour
             DamageHasBeenMade = false;
         }
 
-        if (CurrentLevelOfModel + 1 > LevelToChangeModel.Length)
-        {
-            enabled = false;
-        }
+        
         else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
         {
             Debug.Log("Checkpoint");
@@ -134,6 +134,9 @@ public class V_ToolMaker : MonoBehaviour
 
             Models[CurrentModel].SetActive(true);
             CurrentLevelOfModel++;
+            renderer = Models[CurrentModel].GetComponent<Renderer>();
+            renderer.material = smitingCycle.MaterialsC[smitingCycle.MaterialIndex];
+
 
             Debug.Log("Checkpoint2");
             WeaponStats.StageOfATool = CurrentLevelOfModel;
@@ -156,6 +159,10 @@ public class V_ToolMaker : MonoBehaviour
     {
         yield return new WaitForSeconds(TimeToWait);
         AlreadyClicked = false;
+    }
+    private void OnDisable()
+    {
+        ButtonDown = false;
     }
 }
 
