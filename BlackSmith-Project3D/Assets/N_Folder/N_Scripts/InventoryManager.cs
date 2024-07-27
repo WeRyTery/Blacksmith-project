@@ -224,7 +224,7 @@ public class InventoryManager : MonoBehaviour
             _temporaryIndexHandles++;
         }
     }
-    public bool WeaponReadyCheck(NewWeapon readyWeapon)
+    public NewWeapon WeaponReadyCheck(NewWeapon readyWeapon)
     {
         foreach (var weapon in _newWeapons)
         {
@@ -232,14 +232,14 @@ public class InventoryManager : MonoBehaviour
                 // weapon.Material == readyWeapon.Material
                 )
             {
-                return true;
+                return readyWeapon;
             } 
         }
-        return false;
+        return null;
     }
     public List<NewWeapon> GetWeaponsList()
     {
-        return _newWeapons;
+        return _newWeapons;      
     }
     public List<Metals> GetMetalsList() { 
         return _metals; 
@@ -253,7 +253,7 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Weapons:");
         foreach (var newWeapon in _newWeapons)
         {
-            Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.Damage + " - Number: " + newWeapon.Material + " " + newWeapon.Index);
+            Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.DamagedState + " - Number: " + newWeapon.Material + " " + newWeapon.Index);
         }
 
         Debug.Log("Materials:");
@@ -267,5 +267,10 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log(handle.ItemName + " - Quantity: " + handle.quantity + " " + handle.Index);
         }
+    }
+
+    public NewWeapon CreateNewWeapon()
+    {
+        return new NewWeapon("", "", 0, 0, 0, 10);
     }
 }

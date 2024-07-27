@@ -13,6 +13,11 @@ TagManager:
   - TP_ReceptionRoom
   - DoorToReceptionRoom
   - OrderCounter
+  - StartMelting
+  - StartSmithing
+  - StartSharpening
+  - NotEnoughMoney
+  - MechanicManager
   layers:
   - Default
   - TransparentFX

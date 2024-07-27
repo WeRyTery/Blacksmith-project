@@ -13,6 +13,7 @@ public class InventoryTest : MonoBehaviour
 
         // Add some items to the inventory
         NewWeapon weapon = new NewWeapon("1", "One_Hand", 1, 50, 100, 10);
+        _inventory.AddItem(new NewWeapon("bronze", "Sword", 4, 20, 15, 10));
         _inventory.AddItem(weapon);
         _inventory.AddItem(new NewWeapon("2", "One_Hand", 1, 50, 100, 10));
         _inventory.AddItem(new NewWeapon("3", "One_Hand", 1, 50, 100, 10));
