@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -21,20 +22,23 @@ public class InventoryManager : MonoBehaviour
         _metals = new List<Metals>(_maxSlots);
         _handles = new List<Handle>(_maxSlots);
     }
-    public void AddItem(ItemData item)
+    public bool AddItem(ItemData item)
     {
         if (item is NewWeapon newWeapon) //adds blades and ready weapons
         {
-            AddWeapon(newWeapon);
+            return AddWeapon(newWeapon);
         }
         else if (item is Metals metal) //adds materials
         {
             AddStackableItem(metal, _metals);
+            return false;
         }
         else if (item is Handle handle) //adds handles
         {
             AddStackableItem(handle, _handles);
+            return false;
         }
+        return false;
     }
 
     private bool AddWeapon(NewWeapon newWeapon)
