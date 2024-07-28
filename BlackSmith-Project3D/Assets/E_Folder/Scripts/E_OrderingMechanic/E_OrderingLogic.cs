@@ -37,12 +37,14 @@ public class E_OrderingLogic : MonoBehaviour
     [SerializeField] int MinOrdersInOneGameDay = 1;
     public int currentDayNumOfOrders;
 
-    [SerializeField] int MaxSimultaneousOrders = 5;
+    [SerializeField] public int MaxSimultaneousOrders = 5;
     public int currentNumOfSimultaneousOrders = 0;
 
     //Order settings of current day
     private int currentDayOrdersAmount;
     private bool OrdersCoroutineBeenStartToday;
+
+    E_OrderBookUI orderBook;
 
     public static List<E_OrdersDescription> ordersList = new List<E_OrdersDescription>();
 
@@ -75,8 +77,8 @@ public class E_OrderingLogic : MonoBehaviour
         "Pleased to meet you, young craftsman. I will go straight to the point. I am no master of wielding any weapon, but books wont save me from a swing of a sword or an axe. With thus being said, I look for a weapon to begin with. Here, take this. Description conveys my general desires regarding the weapon"
     };
 
-    private string[] weaponTypes = { "Sword", "Spear", "Battle Axe", "Dagger" };
-    private string[] materials = { "Bronze", "Brass", "Iron", "Steel" }; //Brass - латунь
+    private string[] weaponTypes = { "Sword"};
+    private string[] materials = { "Bronze", "Silver", "Gold"}; //Brass - латунь
 
     private void Awake()
     {
@@ -91,7 +93,10 @@ public class E_OrderingLogic : MonoBehaviour
 
     private void Start()
     {
+        orderBook = GetComponent<E_OrderBookUI>();
+
         E_EventBus.NewDay += NewDay;
+        E_EventBus.PlayerInteractedWithCustomer += NewDialogue;
 
         E_EventBus.LoadSavedData?.Invoke();
     }
@@ -110,25 +115,33 @@ public class E_OrderingLogic : MonoBehaviour
         }
     }
 
+    public void NewDialogue()
+    {
+        DialogueTypeChooser();
+
+        DialoguesText.text = finalDialogueText;
+    }
+
 
     public void NewCustomerOrder() // Calls all functions needed to choose weapon type, budget and dialogue, after that transfers data into text window in the game scene
     {
         if (CanWeStartNewOrder())
         {
-            DialogueTypeChooser();
+            currentDayNumOfOrders++;
+            currentNumOfSimultaneousOrders++;
+
             OrderDescriptionChooser();
             SaveOrderDescriptionList();
             UpdateUIText();
 
-            E_EventBus.NewOrder?.Invoke();
-
-            currentDayNumOfOrders++;
-            currentNumOfSimultaneousOrders++;
+            orderBook.addNewOrderInBook();
         }
     }
 
-    private bool CanWeStartNewOrder()
+    public bool CanWeStartNewOrder()
     {
+        Debug.Log("Current number of simult orders: " + currentNumOfSimultaneousOrders);
+        Debug.Log("Current number of Day orders: " + currentDayNumOfOrders);
         int CurrentGameHour = TimeManager.GetCurrentTime(1);
 
         if (CurrentGameHour > 6 && CurrentGameHour < 22 && currentDayNumOfOrders < MaxOrdersInOneGameDay)
@@ -167,8 +180,8 @@ public class E_OrderingLogic : MonoBehaviour
 
     private void OrderDescriptionChooser()
     {
-        weaponTypeIndexHolder = Random.Range(0, 4); // Randomly chooses weapon type
-        materialIndexHolder = Random.Range(0, 4); // Randomly chooses material for weapon
+        weaponTypeIndexHolder = Random.Range(0, 1); // Randomly chooses weapon type
+        materialIndexHolder = Random.Range(0, 3); // Randomly chooses material for weapon
 
         finalOrderWeaponType = weaponTypes[weaponTypeIndexHolder];
         finalOrderMaterial = materials[materialIndexHolder];
@@ -206,10 +219,9 @@ public class E_OrderingLogic : MonoBehaviour
         FileHandler.SaveToJSON<E_OrdersDescription>(ordersList, dataFilename);
     }
 
+
     public void UpdateUIText()
     {
-        DialoguesText.text = finalDialogueText;
-
         Weapon.text = finalOrderWeaponType;
         Material.text = finalOrderMaterial;
 
@@ -232,7 +244,7 @@ public class E_OrderingLogic : MonoBehaviour
 
     IEnumerator GenerateOrders()
     {
-        currentDayOrdersAmount = 5;
+        currentDayOrdersAmount = Random.Range(MinOrdersInOneGameDay, MaxOrdersInOneGameDay);
 
         while (currentDayOrdersAmount > 0)
         {
@@ -242,8 +254,11 @@ public class E_OrderingLogic : MonoBehaviour
             // Wait until the current time is greater than the target time
             yield return new WaitUntil(() => TimeManager.GetCurrentTime(1) >= currentHour + newOrderInterval);
 
-            NewCustomerOrder();
-            currentDayOrdersAmount--;
+            if (CanWeStartNewOrder())
+            {
+                E_EventBus.CustomerArrival?.Invoke();
+                currentDayOrdersAmount--;
+            }
         }
     }
 }

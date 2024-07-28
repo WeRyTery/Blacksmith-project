@@ -11,7 +11,6 @@ using UnityEngine.UI;
 public class E_OrderBookUI : MonoBehaviour
 {
     [SerializeField] Canvas BookCanvas;
-    [SerializeField] Canvas Orders_Canvas;
 
     [SerializeField] ScrollRect OrderMenu;
     [SerializeField] GameObject OrderButtonPrefab;
@@ -30,7 +29,6 @@ public class E_OrderBookUI : MonoBehaviour
 
     private void Awake()
     {
-        E_EventBus.NewOrder += addNewOrderInBook;
         E_EventBus.LoadSavedData += loadExistingOrders;
     }
 
@@ -55,7 +53,6 @@ public class E_OrderBookUI : MonoBehaviour
                 if (hit.transform.CompareTag("Book"))
                 {
                     BookCanvas.gameObject.SetActive(true);
-                    Orders_Canvas.gameObject.SetActive(false); // To avoid UI object conflicts between canvases
                 }
             }
         }
@@ -84,7 +81,6 @@ public class E_OrderBookUI : MonoBehaviour
     public void CloseOrdersBook()
     {
         BookCanvas.gameObject.SetActive(false);
-        Orders_Canvas.gameObject.SetActive(true);
     }
 
     public void addNewOrderInBook()
@@ -153,7 +149,6 @@ public class E_OrderBookUI : MonoBehaviour
             {
                 if (button.GetOrderIndex() > OrdersIndex)
                 {
-                    Debug.Log("Changed " + button.GetOrderIndex() + " to: " + (button.GetOrderIndex() - 1));
                     button.SetOrderIndex(button.GetOrderIndex() - 1);
                 }
             }

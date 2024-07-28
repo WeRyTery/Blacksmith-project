@@ -53,7 +53,7 @@ public class InventoryManager : MonoBehaviour
             _newWeapons[emptySlotIndex].Index = emptySlotIndex;
             Debug.Log("Weapon added: " + newWeapon.ItemName + " " + newWeapon.Material);
         }
-        else 
+        else
         {
             Debug.Log("No available slots for weapons");
         }
@@ -104,7 +104,7 @@ public class InventoryManager : MonoBehaviour
                     inventory.Add(item);
                     ((dynamic)item).quantity = 0;
                     CheckForItemTypeToAdd(item);
-                    
+
                     Debug.Log("Added new stack of " + ((dynamic)item).quantity + " " + item.ItemName);
                 }
             }
@@ -131,6 +131,7 @@ public class InventoryManager : MonoBehaviour
 
         if (item is NewWeapon newWeapon)
         {
+            Debug.Log(newWeapon.Material);
             if (_newWeapons[newWeapon.Index] != null)
             {
                 _newWeapons[newWeapon.Index] = null;
@@ -225,21 +226,23 @@ public class InventoryManager : MonoBehaviour
     {
         foreach (var weapon in _newWeapons)
         {
-            if (weapon.ItemName == readyWeapon.ItemName && weapon.Stage == 4
-                // weapon.Material == readyWeapon.Material
-                )
-            {
-                return readyWeapon;
-            } 
+                if (weapon.ItemName == readyWeapon.ItemName && weapon.Stage == 4
+                                // weapon.Material == readyWeapon.Material
+                                )
+                {
+                    return readyWeapon;
+                }
         }
+
         return null;
     }
     public List<NewWeapon> GetWeaponsList()
     {
-        return _newWeapons;      
+        return _newWeapons;
     }
-    public List<Metals> GetMetalsList() { 
-        return _metals; 
+    public List<Metals> GetMetalsList()
+    {
+        return _metals;
     }
     public List<Handle> GetHandleList()
     {

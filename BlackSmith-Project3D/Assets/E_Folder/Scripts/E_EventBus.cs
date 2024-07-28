@@ -9,6 +9,9 @@ public static class E_EventBus
 {
     public static Action NewOrder;
 
+    public static Action CustomerArrival;
+    public static Action PlayerInteractedWithCustomer;
+
     public static Action LoadSavedData;
 
     public static Action ResetUXafterSmithingMechanic;
