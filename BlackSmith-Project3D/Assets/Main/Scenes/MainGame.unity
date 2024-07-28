@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.25670478, g: 0.25778154, b: 0.21505487, a: 1}
+  m_FogColor: {r: 0.6761147, g: 0.7847077, b: 0.86867887, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.38431376, g: 0.4431373, b: 0.9607844, a: 1}
+  m_AmbientSkyColor: {r: 0.81538767, g: 0.9447186, b: 0.9254117, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.000017555574, g: 0.000000028897734, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.17573395, g: 0.21990283, b: 0.30223167, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -28685,7 +28685,6 @@ GameObject:
   - component: {fileID: 668923193}
   - component: {fileID: 668923192}
   - component: {fileID: 668923194}
-  - component: {fileID: 668923195}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -28764,10 +28763,10 @@ MonoBehaviour:
   DataPath: TimeDataSaver.json
   RealSecondsInGameHour: 60
   SaveTimeDataEveryInSeconds: 600
-  TimeOfDay: 22.2
-  HourOfDay: 22
-  MinuteOfHour: 12
-  dayNumber: 96
+  TimeOfDay: 13.516666
+  HourOfDay: 13
+  MinuteOfHour: 31
+  dayNumber: 111
   CurrentTimeText: {fileID: 392290421}
 --- !u!4 &668923190
 Transform:
@@ -28848,18 +28847,6 @@ MonoBehaviour:
   TimeToReachWaitingPoint: 3
   AcceptOrDeclineCanvas: {fileID: 1153060257}
   PopoutMessage: {fileID: 1482687545}
---- !u!114 &668923195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 668923185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82809fb391fcacf4181c663da4f3dfe8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &670308159 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 455772, guid: 061faed207d7a4b52b09b4f68119bae4,
@@ -81824,7 +81811,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859119717}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.074312545, y: 0.52051026, z: 0.8493957, w: -0.045538776}
+  m_LocalRotation: {x: 0.072572865, y: -0.5516477, z: 0.8295111, w: 0.048262957}
   m_LocalPosition: {x: 4.372841, y: 3, z: 119.50921}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -81865,7 +81852,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.13435385, g: 0.13435385, b: 0.13435385, a: 1}
+  m_Color: {r: 0.76941466, g: 0.72173727, b: 0.72173727, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
