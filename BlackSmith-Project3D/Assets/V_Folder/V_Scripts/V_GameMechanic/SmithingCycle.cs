@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using UnityEngine;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
+using TMPro;
+using System.Linq;
 
 public class SmithingCycle : MonoBehaviour
 {
@@ -15,7 +17,12 @@ public class SmithingCycle : MonoBehaviour
     [SerializeField] private GameObject SmithingCanvas;
     [SerializeField] private GameObject SmithingProgressButton;
     [SerializeField] private GameObject SmithingInventory;
-
+    [SerializeField] private TextMeshProUGUI[] TextAmounts = new TextMeshProUGUI[3];
+    [Space]
+    [SerializeField] private GameObject TextNoSpace;
+    [Header("Other Variables")]
+    [SerializeField] private float TimeForText;
+    public bool SmelterStopSmelting = false;
     [Header("Scripts")]
     public V_ToolMaker smithing;
     public ControlsForSharpening sharpening;
@@ -44,6 +51,8 @@ public class SmithingCycle : MonoBehaviour
     }
     private void Update()
     {
+
+        int[] WeaponTypes = new int[3];
         if(CameraStateScript.IsSmelting == true)
         {
             SmeltingCanvas.SetActive(true);
@@ -80,6 +89,10 @@ public class SmithingCycle : MonoBehaviour
             }
             else
             {
+                WeaponTypes = InventoryManager.CountWeaponTypes(InventoryManager.GetWeaponsList());
+                TextAmounts[0].text = $"Amount: {WeaponTypes[0]}";
+                TextAmounts[1].text = $"Amount: {WeaponTypes[1]}";
+                TextAmounts[2].text = $"Amount: {WeaponTypes[2]}";
                 SmithingInventory.SetActive(true);
 
             }
@@ -87,36 +100,6 @@ public class SmithingCycle : MonoBehaviour
         }
     }
 
-
-    private void TheSmitingLogic(bool startOrStop)
-    {
-
-        if (startOrStop)
-        {
-            
-            smithing.enabled = true;
-        }
-        else
-        {
-          
-            smithing.enabled = false;
-        }
-    }
-
-    private void TheSharpeningLogic(bool startOrStop)
-    {
-
-        if (startOrStop)
-        {
-           
-            sharpening.enabled = true;
-        }
-        else
-        {
-            
-            sharpening.enabled = false;
-        }
-    }
 
     public void Exit()
     {
@@ -140,36 +123,80 @@ public class SmithingCycle : MonoBehaviour
         }
         else
         {
-            PlayerChosedMaterial = false;
-            SmeltingProgressButton.SetActive(false);
-            NewWeapon Sword = InventoryManager.CreateNewWeapon();
-            switch (MaterialIndex) 
+            if(SmelterStopSmelting == true || PlayerStarted == true)
             {
-                case 0:
-                Sword.Material = "Bronze";
-                    break;
-                case 1:
-                Sword.Material = "Silver";
-                    break;
-                case 2:
-                Sword.Material = "Gold";
-                    break;
+                PlayerChosedMaterial = false;
+                SmeltingProgressButton.SetActive(false);
+                NewWeapon Sword = InventoryManager.CreateNewWeapon();
+                switch (MaterialIndex) 
+                {
+                    case 0:
+                    Sword.Material = "Bronze";
+                        break;
+                    case 1:
+                    Sword.Material = "Silver";
+                        break;
+                    case 2:
+                    Sword.Material = "Gold";
+                        break;
+                }
+
+                Sword.ItemName = "Sword";
+                if (InventoryManager.CheckForSpaceInInventory() == true && SmelterStopSmelting == false)
+                {
+                    InventoryManager.AddItem(Sword);
+                    Instruments[0].SetActive(false);
+                    E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
+                    PlayerStarted = false;
+                    Smelting.enabled = false;
+                    InventoryManager.PrintInventory();
+                }
+                else if(InventoryManager.CheckForSpaceInInventory() == false && SmelterStopSmelting == false)
+                {
+                    StartCoroutine("HoldDownTextNoSpace");
+                    E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
+                    PlayerStarted = false;
+                    Smelting.enabled = false;
+                    InventoryManager.PrintInventory();
+                }
+                else
+                {
+                    E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
+                    PlayerStarted = false;
+                    Smelting.enabled = false;
+                }
+
             }
-
-            Sword.ItemName = "Sword";
-
-            InventoryManager.AddItem(Sword);
-
-            Instruments[0].SetActive(false);
-            E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
-            PlayerStarted = false;
-            Smelting.enabled = false;
+            else { }
         }
     }
     public void ProgressButtonSmithing()
     {
-        if(PlayerStarted == false)
+        NewWeapon WeaponToDestroy = InventoryManager.CreateNewWeapon();
+        NewWeapon WeaponToAdd = InventoryManager.CreateNewWeapon();
+        if (PlayerStarted == false)
         {
+
+            if (MaterialIndex == 0)
+            {
+                WeaponToDestroy.Material = "Bronze";
+            }
+            else if (MaterialIndex == 1)
+            {
+                WeaponToDestroy.Material = "Silver";
+            }
+            else if (MaterialIndex == 2)
+            {
+                WeaponToDestroy.Material = "Gold";
+            }
+            WeaponToDestroy.ItemName = "Sword";
+            WeaponToDestroy.Stage = 0;
+            WeaponToDestroy = InventoryManager.WeaponSmithingCheck(WeaponToDestroy);
+
+            Debug.Log(WeaponToDestroy.Material);
+            InventoryManager.RemoveItem(WeaponToDestroy);
+            InventoryManager.PrintInventory();
+
             MainSword.SetActive(true);
             MainSword.transform.position = Positions[1].transform.position;
             MainSword.transform.rotation = Quaternion.Euler(0,180,0);
@@ -179,6 +206,23 @@ public class SmithingCycle : MonoBehaviour
         }
         else
         {
+            if (MaterialIndex == 0)
+            {
+                WeaponToAdd.Material = "Bronze";
+            }
+            else if (MaterialIndex == 1)
+            {
+                WeaponToAdd.Material = "Silver";
+            }
+            else if (MaterialIndex == 2)
+            {
+                WeaponToAdd.Material = "Gold";
+            }
+            WeaponToAdd.ItemName = "Sword";
+
+
+            WeaponToAdd.Stage = 4;
+
             PlayerChosedMaterial = false;
             SmithingProgressButton.SetActive(false);
 
@@ -186,7 +230,18 @@ public class SmithingCycle : MonoBehaviour
             E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
             PlayerStarted = false;
 
+            WeaponToAdd.DamagedState = smithing.DamageOverall;
+
+
             smithing.enabled = false;
+            InventoryManager.AddItem(WeaponToAdd);
+            InventoryManager.PrintInventory();
         }
+    }
+    IEnumerator HoldDownTextNoSpace() 
+    {
+        TextNoSpace.SetActive(true);
+        yield return new WaitForSeconds(TimeForText);
+        TextNoSpace.SetActive(false);
     }
 }

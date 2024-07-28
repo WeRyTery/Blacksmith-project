@@ -114,7 +114,6 @@ public class E_OrderBookUI : MonoBehaviour
         {
             weaponDamageState = finishedWeapon.DamagedState;
             inventoryManager.RemoveItem(finishedWeapon);
-
             orderLogic.currentNumOfSimultaneousOrders--;
         }
         else

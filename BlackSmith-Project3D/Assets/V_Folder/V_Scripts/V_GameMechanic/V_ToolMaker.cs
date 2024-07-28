@@ -25,7 +25,7 @@ public class V_ToolMaker : MonoBehaviour
     [Space]
 
     [Header("Damege Settings")]
-    [SerializeField] private int DamageOverall;
+    public int DamageOverall;
 
     [Header("Damege Settings")]
 
@@ -41,7 +41,6 @@ public class V_ToolMaker : MonoBehaviour
 
     [Space]
     [Header("other Scripts")]
-    public ToolStats WeaponStats;
     private bool wasClickOnSword;
     private BoxCollider swordCollider;
     public SmithingCycle smitingCycle;
@@ -49,10 +48,9 @@ public class V_ToolMaker : MonoBehaviour
     private void Start()
     {
         Models[0].SetActive(true);
-        renderer = Models[0].GetComponent<Renderer>();
+        renderer = Models[0].gameObject.GetComponent<Renderer>();
         renderer.material = smitingCycle.MaterialsC[smitingCycle.MaterialIndex];
 
-        WeaponStats = GetComponent<ToolStats>();
         swordCollider = SwordColliderHolder.GetComponent<BoxCollider>();
     }
 
@@ -111,7 +109,6 @@ public class V_ToolMaker : MonoBehaviour
                     DamageOverall += DamageAtFinish;
                     ClicksMade += ClicksIfDamaged;
 
-                    WeaponStats.DamageOfATool += DamagePerPower[i];
                     DamageHasBeenMade = true;
 
                     break;
@@ -119,31 +116,39 @@ public class V_ToolMaker : MonoBehaviour
             }
             if (!DamageHasBeenMade)
             {
-                WeaponStats.DamageOfATool += DamageAtFinish;
             }
 
             DamageHasBeenMade = false;
         }
 
         
-        else if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
+        else if (LevelToChangeModel.Length > CurrentLevelOfModel)
         {
-            Debug.Log("Checkpoint");
-            Models[CurrentModel].SetActive(false);
-            CurrentModel++;
+            if(ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
+            {
+                Debug.Log("Checkpoint");
+                Models[CurrentModel].SetActive(false);
+                CurrentModel++;
 
-            Models[CurrentModel].SetActive(true);
-            CurrentLevelOfModel++;
-            renderer = Models[CurrentModel].GetComponent<Renderer>();
-            renderer.material = smitingCycle.MaterialsC[smitingCycle.MaterialIndex];
+                Models[CurrentModel].SetActive(true);
+                CurrentLevelOfModel++;
+                renderer = Models[CurrentModel].gameObject.GetComponent<Renderer>();
+                renderer.material = smitingCycle.MaterialsC[smitingCycle.MaterialIndex];
 
 
-            Debug.Log("Checkpoint2");
-            WeaponStats.StageOfATool = CurrentLevelOfModel;
-            Debug.Log("CheckPoint3");
+                Debug.Log("Checkpoint2");
+                Debug.Log("CheckPoint3");
 
+                ClicksMade = 0;
+                Debug.Log("Reseted");
+            }
+        }
+        else
+        {
             ClicksMade = 0;
-            Debug.Log("Reseted");
+            DamageOverall = 0;
+            CurrentLevelOfModel = 0;
+            CurrentModel = 0;
         }
     }
     IEnumerator ClickHoldTime()

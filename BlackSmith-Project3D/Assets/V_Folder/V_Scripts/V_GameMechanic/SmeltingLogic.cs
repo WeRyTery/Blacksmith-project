@@ -24,9 +24,11 @@ public class SmeltingLogic : MonoBehaviour
         ControlOfMechanic.MaterialGameObject.SetActive(true);
         renderer = ControlOfMechanic.MaterialGameObject.GetComponent<Renderer>();
         renderer.material = ControlOfMechanic.MaterialsC[ControlOfMechanic.MaterialIndex];
+        ControlOfMechanic.SmelterStopSmelting = true;
 
         yield return new WaitForSeconds(TimeToSmeltMaterial);
 
+        ControlOfMechanic.SmelterStopSmelting = false;
         FurnaceLights.SetActive(false);
         ControlOfMechanic.MaterialGameObject.SetActive(false);
         renderer = ControlOfMechanic.Instruments[0].GetComponent<Renderer>();
