@@ -18,7 +18,7 @@ public class CustomerScript : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] GameObject AcceptOrDeclineCanvas;
-    [SerializeField] GameObject PopoutMessage;
+    [SerializeField] GameObject PopoutMessageCanvas;
 
     private static List<GameObject> Customers = new List<GameObject>();
     private int customerQueue = 0;
@@ -106,9 +106,9 @@ public class CustomerScript : MonoBehaviour
             Sequence mySequence = DOTween.Sequence();
 
             mySequence.AppendCallback(() => AcceptOrDeclineCanvas.SetActive(false));
-            mySequence.AppendCallback(() => PopoutMessage.SetActive(true));
+            mySequence.AppendCallback(() => PopoutMessageCanvas.SetActive(true));
             mySequence.AppendInterval(3f);
-            mySequence.AppendCallback(() => PopoutMessage.SetActive(false));
+            mySequence.AppendCallback(() => PopoutMessageCanvas.SetActive(false));
 
             if (customerQueue > 0)
             {

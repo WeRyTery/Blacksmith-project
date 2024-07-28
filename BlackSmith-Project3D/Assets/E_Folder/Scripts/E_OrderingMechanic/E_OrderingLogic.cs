@@ -24,7 +24,7 @@ public class E_OrderingLogic : MonoBehaviour
     //Weapon stats 
     private int weaponTypeIndexHolder;
     private int materialIndexHolder;
-    private int[] midWeaponBudgetRange = { 100, 400 };
+    private int[] midWeaponBudgetRange = { 100, 200 };
     private int[] lightWeaponBudgetRange = { 50, 150 };
 
     //Final order conditions
@@ -197,17 +197,14 @@ public class E_OrderingLogic : MonoBehaviour
 
         switch (finalOrderMaterial)
         {
-            case "Iron":
-                finalOrderBudget += 20;
-                break;
-            case "Steel":
-                finalOrderBudget += 30;
-                break;
             case "Bronze":
-                finalOrderBudget += 40;
+                finalOrderBudget += 35;
                 break;
-            case "Brass":
-                finalOrderBudget += 80;
+            case "Silver":
+                finalOrderBudget += 55;
+                break;
+            case "Gold":
+                finalOrderBudget += 85;
                 break;
         }
     }
