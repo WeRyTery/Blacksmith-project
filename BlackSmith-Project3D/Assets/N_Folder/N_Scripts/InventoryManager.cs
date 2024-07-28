@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -21,23 +22,26 @@ public class InventoryManager : MonoBehaviour
         _metals = new List<Metals>(_maxSlots);
         _handles = new List<Handle>(_maxSlots);
     }
-    public void AddItem(ItemData item)
+    public bool AddItem(ItemData item)
     {
         if (item is NewWeapon newWeapon) //adds blades and ready weapons
         {
-            AddWeapon(newWeapon);
+            return AddWeapon(newWeapon);
         }
         else if (item is Metals metal) //adds materials
         {
             AddStackableItem(metal, _metals);
+            return false;
         }
         else if (item is Handle handle) //adds handles
         {
             AddStackableItem(handle, _handles);
+            return false;
         }
+        return false;
     }
 
-    private void AddWeapon(NewWeapon newWeapon)
+    private bool AddWeapon(NewWeapon newWeapon)
     {
         int emptySlotIndex = CheckForEmptySlot(_newWeapons);
         if (_newWeapons.Count < _maxSlots)
@@ -46,16 +50,19 @@ public class InventoryManager : MonoBehaviour
             newWeapon.Index = _temporaryIndexWeapons;
             _temporaryIndexWeapons++;
             Debug.Log("Weapon added: " + newWeapon.ItemName + " " + newWeapon.Material);
+            return true;
         }
         else if (emptySlotIndex != 10)
         {
             _newWeapons[emptySlotIndex] = newWeapon;
             _newWeapons[emptySlotIndex].Index = emptySlotIndex;
             Debug.Log("Weapon added: " + newWeapon.ItemName + " " + newWeapon.Material);
+            return true;
         }
         else
         {
             Debug.Log("No available slots for weapons");
+            return false;
         }
     }
     private void AddStackableItem<T>(T item, List<T> inventory) where T : ItemData
