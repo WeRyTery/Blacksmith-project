@@ -142,7 +142,7 @@ public class E_OrderingLogic : MonoBehaviour
     {
         int CurrentGameHour = TimeManager.GetCurrentTime(1);
 
-        if (CurrentGameHour > 6 && CurrentGameHour < 22 && currentDayNumOfOrders < MaxOrdersInOneGameDay)
+        if (CurrentGameHour >= 5 && CurrentGameHour <= 23 && currentDayNumOfOrders < MaxOrdersInOneGameDay)
         {
             if (currentNumOfSimultaneousOrders < MaxSimultaneousOrders)
             {
