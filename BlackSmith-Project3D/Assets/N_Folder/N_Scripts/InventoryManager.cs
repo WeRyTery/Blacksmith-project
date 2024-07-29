@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using static UnityEngine.Rendering.PostProcessing.SubpixelMorphologicalAntialiasing;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -121,7 +122,10 @@ public class InventoryManager : MonoBehaviour
 
                 else
                 {
-                    inventory.Add(item);
+                    T newItem = (T)item.Clone();
+                    ((dynamic)newItem).quantity = ((dynamic)item).quantity;
+                    inventory.Add(newItem);
+                    CheckForItemTypeToAdd(newItem);
                     ((dynamic)item).quantity = 0;
                     CheckForItemTypeToAdd(item);
 
