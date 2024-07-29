@@ -134,9 +134,23 @@ public class InventoryManager : MonoBehaviour
             }
             else if (emptySlotIndex != 10)
             {
-                inventory[emptySlotIndex] = item;
-                inventory[emptySlotIndex].Index = emptySlotIndex;
-                Debug.Log("Added new stack of " + ((dynamic)item).quantity + " " + item.ItemName);
+                if (((dynamic)item).quantity > _maxStackSize)
+                {
+                    T newItem = (T)item.Clone();
+                    ((dynamic)newItem).quantity = _maxStackSize;
+                    ((dynamic)item).quantity -= _maxStackSize;
+                    inventory[emptySlotIndex] = newItem;
+                    inventory[emptySlotIndex].Index = emptySlotIndex;
+                    Debug.Log("Added new stack of " + ((dynamic)item).quantity + " " + item.ItemName);
+                }
+                else
+                {
+                    T newItem = (T)item.Clone();
+                    ((dynamic)newItem).quantity = ((dynamic)item).quantity;
+                    inventory[emptySlotIndex] = newItem;
+                    inventory[emptySlotIndex].Index = emptySlotIndex;
+                    Debug.Log("Added new stack of " + ((dynamic)item).quantity + " " + item.ItemName);
+                }
             }
 
             //no slots available behavior
@@ -236,12 +250,12 @@ public class InventoryManager : MonoBehaviour
     {
         if (item is Metals metal)
         {
-            ((dynamic)item).Index = _temporaryIndexMetals;
+            item.Index = _temporaryIndexMetals;
             _temporaryIndexMetals++;
         }
         else if (item is Handle handle)
         {
-            ((dynamic)item).Index = _temporaryIndexHandles;
+            item.Index = _temporaryIndexHandles;
             _temporaryIndexHandles++;
         }
     }
