@@ -176,7 +176,6 @@ public class SmithingCycle : MonoBehaviour
         NewWeapon WeaponToAdd = InventoryManager.CreateNewWeapon();
         if (PlayerStarted == false)
         {
-
             if (MaterialIndex == 0)
             {
                 WeaponToDestroy.Material = "Bronze";
@@ -191,6 +190,9 @@ public class SmithingCycle : MonoBehaviour
             }
             WeaponToDestroy.ItemName = "Sword";
             WeaponToDestroy.Stage = 0;
+
+            InventoryManager.PrintInventory();
+
             WeaponToDestroy = InventoryManager.WeaponSmithingCheck(WeaponToDestroy);
 
             Debug.Log(WeaponToDestroy.Material);
