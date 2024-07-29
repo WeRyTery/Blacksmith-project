@@ -24,10 +24,10 @@ public class E_CameraManagment : MonoBehaviour
     [Space]
 
     [Header("Smiting Cycle variables")]
-     public bool IsSmiting = false;
-     public bool IsSmelting = false;
-     public bool IsSharpening = false;
-     
+    public bool IsSmiting = false;
+    public bool IsSmelting = false;
+    public bool IsSharpening = false;
+
 
 
     private CinemachineBrain brain;
@@ -84,7 +84,7 @@ public class E_CameraManagment : MonoBehaviour
                     break;
 
                 case "StartSmithing":
-                    EnableSmithingCamera(); 
+                    EnableSmithingCamera();
                     IsSmiting = true;
                     break;
 
@@ -111,6 +111,13 @@ public class E_CameraManagment : MonoBehaviour
     {
         DoWeChangeBlendMode = true;
         StartCoroutine(ChangeCurrentCamera(OrderCounterCamera));
+
+        //If customer is waiting, by interacting with counter, we interact with customer.
+        if (CustomerScript.customerArrived)
+        {
+            E_EventBus.PlayerInteractedWithCustomer?.Invoke();
+        }
+
     }
 
     private void EnableReceptionRoomCamera()
@@ -131,7 +138,7 @@ public class E_CameraManagment : MonoBehaviour
     }
 
     ////////////////////// SMITHING MECHANIC CAMERAS BELOW ///////////////////////
-    
+
     private void EnableMeltingFurnaceCamera()
     {
         DoWeFreezePlayerMovement = true;

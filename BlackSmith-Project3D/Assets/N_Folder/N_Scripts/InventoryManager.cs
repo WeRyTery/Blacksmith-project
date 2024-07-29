@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -30,14 +31,30 @@ public class InventoryManager : MonoBehaviour
         else if (item is Metals metal) //adds materials
         {
             AddStackableItem(metal, _metals);
+            
         }
         else if (item is Handle handle) //adds handles
         {
             AddStackableItem(handle, _handles);
+            
+        }
+        
+    }
+    public bool CheckForSpaceInInventory()
+    {
+        int emptySlotIndex = CheckForEmptySlot(_newWeapons);
+        if (_newWeapons.Count >= _maxSlots)
+        {
+            Debug.Log(" NO Space");
+            return false;
+        }
+        else
+        {
+            Debug.Log("Space");
+            return true;
         }
     }
-
-    private bool AddWeapon(NewWeapon newWeapon)
+    private void AddWeapon(NewWeapon newWeapon)
     {
         int emptySlotIndex = CheckForEmptySlot(_newWeapons);
         if (_newWeapons.Count < _maxSlots)
@@ -46,19 +63,19 @@ public class InventoryManager : MonoBehaviour
             newWeapon.Index = _temporaryIndexWeapons;
             _temporaryIndexWeapons++;
             Debug.Log("Weapon added: " + newWeapon.ItemName + " " + newWeapon.Material);
-            return true;
+            
         }
         else if (emptySlotIndex != 10)
         {
             _newWeapons[emptySlotIndex] = newWeapon;
             _newWeapons[emptySlotIndex].Index = emptySlotIndex;
             Debug.Log("Weapon added: " + newWeapon.ItemName + " " + newWeapon.Material);
-            return true;
+            
         }
         else 
         {
             Debug.Log("No available slots for weapons");
-            return false;
+            
         }
     }
     private void AddStackableItem<T>(T item, List<T> inventory) where T : ItemData
@@ -228,20 +245,42 @@ public class InventoryManager : MonoBehaviour
     {
         foreach (var weapon in _newWeapons)
         {
-            if (weapon.ItemName == readyWeapon.ItemName && weapon.Stage == 4
-                // weapon.Material == readyWeapon.Material
-                )
+            if (weapon != null)
             {
-                return readyWeapon;
-            } 
+                if (weapon.ItemName == readyWeapon.ItemName && weapon.Stage == 4
+                                // weapon.Material == readyWeapon.Material
+                                )
+                {
+                    return weapon;
+                }
+            }
         }
+
+        return null;
+    }
+    public NewWeapon WeaponSmithingCheck(NewWeapon readyWeapon)
+    {
+        foreach (var weapon in _newWeapons)
+        {
+            if (weapon != null)
+            {
+                if (weapon.ItemName == readyWeapon.ItemName
+                                // weapon.Material == readyWeapon.Material
+                                )
+                {
+                    return weapon;
+                }
+            }
+        }
+
         return null;
     }
     public List<NewWeapon> GetWeaponsList()
     {
         return _newWeapons;      
     }
-    public List<Metals> GetMetalsList() { 
+    public List<Metals> GetMetalsList() 
+    { 
         return _metals; 
     }
     public List<Handle> GetHandleList()
@@ -253,7 +292,10 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Weapons:");
         foreach (var newWeapon in _newWeapons)
         {
-            Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.DamagedState + " - Number: " + newWeapon.Material + " " + newWeapon.Index);
+            if(newWeapon != null)
+            {
+                Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.DamagedState + " - Number: " + newWeapon.Material + " " + newWeapon.Index + " Stage: " + newWeapon.Stage);
+            }
         }
 
         Debug.Log("Materials:");
@@ -271,6 +313,31 @@ public class InventoryManager : MonoBehaviour
 
     public NewWeapon CreateNewWeapon()
     {
-        return new NewWeapon("", "", 0, 0, 0, 10);
+        return new NewWeapon("", "", 0, 0, 0, 0);
+    }
+    public int[] CountWeaponTypes(List<NewWeapon> weapons)
+    {
+        int countBronze = 0;
+        int countSilver = 0;
+        int countGold = 0;
+        foreach (var weapon in weapons)
+        {
+            if(weapon.Stage == 0)
+            {
+                if (weapon.Material == "Bronze")
+                {
+                    countBronze++;
+                }
+                else if (weapon.Material == "Silver")
+                {
+                    countSilver++;
+                }
+                else if (weapon.Material == "Gold")
+                {
+                    countGold++;
+                }
+            }
+        }
+        return new int[3]{ countGold, countSilver, countBronze };
     }
 }

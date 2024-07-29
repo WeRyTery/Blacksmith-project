@@ -11,29 +11,24 @@ public class SharpeningLogic : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private int SharpeningDamage;
     [SerializeField] private int SharpenedAmountLimit;
-    private ToolStats WeaponStats;
 
     [Header("Sharpening Settings")]
     [SerializeField] private int SharpenedAmount;
     [SerializeField] private int AmountForEachSharpeningCycle;
 
-    private void Start()
-    {
-        WeaponStats = GameObject.FindGameObjectWithTag("MechanicManager").GetComponent<ToolStats>();
-    }
+    public SmithingCycle ControlOfMechanic;
+
 
     private void OnTriggerStay(Collider other)
     {
         if (!SharpeningStarted && SharpenedAmount < SharpenedAmountLimit)
         {
             SharpenedAmount += AmountForEachSharpeningCycle;
-            WeaponStats.SharpnessOfATool += AmountForEachSharpeningCycle;
             SharpeningStarted = true;
             StartCoroutine("SharpeningCoolDown");
         }
         else if(SharpenedAmount >= SharpenedAmountLimit && !SharpeningStarted)
         {
-            WeaponStats.DamageOfATool += SharpeningDamage;
             SharpeningStarted = true;
             StartCoroutine("SharpeningCoolDown");
         }
