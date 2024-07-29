@@ -140,8 +140,6 @@ public class E_OrderingLogic : MonoBehaviour
 
     public bool CanWeStartNewOrder()
     {
-        Debug.Log("Current number of simult orders: " + currentNumOfSimultaneousOrders);
-        Debug.Log("Current number of Day orders: " + currentDayNumOfOrders);
         int CurrentGameHour = TimeManager.GetCurrentTime(1);
 
         if (CurrentGameHour > 6 && CurrentGameHour < 22 && currentDayNumOfOrders < MaxOrdersInOneGameDay)
