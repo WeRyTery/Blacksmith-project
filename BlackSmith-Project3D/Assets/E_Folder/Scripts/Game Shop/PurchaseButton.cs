@@ -27,7 +27,7 @@ public class PurchaseButton : MonoBehaviour
         inventoryLoader = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InventoryLoader>();
         inventoryManager = inventoryLoader.GetInventory();
 
-        if (itemName == "Bronze" || itemName == "Silve" || itemName == "Gold")
+        if (itemName == "Bronze" || itemName == "Silver" || itemName == "Gold")
         {
             metalToSell = new Metals(itemName, 1, 10);
         }

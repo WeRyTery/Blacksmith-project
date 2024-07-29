@@ -18,4 +18,9 @@ public static class E_EventBus
     public static Action EnableSmithingMechanicUI;
 
     public static Action NewDay;
+
+    //Countable UI
+
+    public static Action UpdateMoneyUI;
+    public static Action UpdateReputationUI;
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public static class Reputation
     public static void AddReputation(int AmountToAdd)
     {
         CurrentReputation += AmountToAdd;
+        UpdateUI();
     }
 
     public static void SubtractReputation(int AmountToSubtract)
@@ -29,8 +31,9 @@ public static class Reputation
             CurrentReputation = -300;
         }
 
-            CurrentReputation -= AmountToSubtract;
-    }   
+        CurrentReputation -= AmountToSubtract;
+        UpdateUI();
+    }
 
     public static bool IsReputationEnough(int GoalReputation)
     {
@@ -41,7 +44,7 @@ public static class Reputation
         else
         {
             return true;
-        } 
+        }
     }
 
     public static void CheckWeaponRatingForReputation(float WeaponStarRating)
@@ -71,5 +74,10 @@ public static class Reputation
                 Debug.Log("Error, inserted star rating was invalid");
                 break;
         }
+    }
+
+    public static void UpdateUI()
+    {
+        E_EventBus.UpdateReputationUI?.Invoke();
     }
 }
