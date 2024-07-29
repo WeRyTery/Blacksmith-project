@@ -6,11 +6,10 @@ using UnityEngine.UI;
 
 public class PurchaseButton : MonoBehaviour
 {
-    [SerializeField] 
+    [SerializeField]
 
+    public string itemName; // Bronze, Silver, Gold | only 3 options | 
     public int ObjectPrice;
-    public bool IsMultiBuyable; // Can you buy multiple copy of this item
-    public int MaxBuyableItems; // How much copys of an item you can buy
 
     private bool isButtonEnabled = true;
     private int currentItemsBought = 0;
@@ -18,29 +17,31 @@ public class PurchaseButton : MonoBehaviour
     private Button buyButton;
     private TextMeshProUGUI NotEnoughMoneyText;
 
+    public InventoryLoader inventoryLoader;
+    public InventoryManager inventoryManager;
+
+    private Metals metalToSell;
+
+    private void Start()
+    {
+        inventoryLoader = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InventoryLoader>();
+        inventoryManager = inventoryLoader.GetInventory();
+
+        if (itemName == "Bronze" || itemName == "Silver" || itemName == "Gold")
+        {
+            metalToSell = new Metals(itemName, 4, 10);
+        }
+
+    }
+
     public void Buy()
     {
-        if (ObjectPrice < Money.GetCurrentMoney())
+        if (Money.GetCurrentMoney() >= ObjectPrice)
         {
             Money.SubtractMoney(ObjectPrice);
 
-            switch (IsMultiBuyable)
-            {
-                case true:
-                    if (currentItemsBought++ == MaxBuyableItems)
-                    {
-                        DisableButton();
-                        currentItemsBought++;
-                        break;
-                    }
-
-                    currentItemsBought++;
-                    break;
-
-                case false:
-                    DisableButton();
-                    break;
-            }
+            inventoryManager.AddItem(metalToSell);
+            inventoryManager.PrintInventory();
             return;
         }
 
@@ -66,7 +67,7 @@ public class PurchaseButton : MonoBehaviour
     {
         buyButton.interactable = false;
         NotEnoughMoneyText.enabled = true;
-        
+
 
         yield return new WaitForSeconds(2);
 

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
+using System.Collections;
 
 public class E_OrderingLogic : MonoBehaviour
 {
@@ -10,22 +12,39 @@ public class E_OrderingLogic : MonoBehaviour
     [SerializeField] TextMeshProUGUI Budget; // BUDGET == REWARD (I WAS OM SOMETHING WHEN CREATED THIS VAR)
     [SerializeField] string dataFilename = "OrdersData.json";
 
+    //TextVariations
     private int commonTextVariationsAmount = 7; // normal and cheeky dialogues variations
     private int rareTextVariationsAmount = 3; // elegant dialogues variations
 
+    //Dialogue windows
     private int dialogueTypeIndexHolder;
     private int dialogueIndexHolder;
     private string finalDialogueText;
 
+    //Weapon stats 
     private int weaponTypeIndexHolder;
     private int materialIndexHolder;
-    private int[] midWeaponBudgetRange = { 100, 400 };
+    private int[] midWeaponBudgetRange = { 100, 200 };
     private int[] lightWeaponBudgetRange = { 50, 150 };
 
-
+    //Final order conditions
     public static int finalOrderBudget;
     public static string finalOrderWeaponType;
     public static string finalOrderMaterial;
+
+    //Order settings
+    [SerializeField] int MaxOrdersInOneGameDay = 3;
+    [SerializeField] int MinOrdersInOneGameDay = 1;
+    public int currentDayNumOfOrders;
+
+    [SerializeField] public int MaxSimultaneousOrders = 5;
+    public int currentNumOfSimultaneousOrders = 0;
+
+    //Order settings of current day
+    private int currentDayOrdersAmount;
+    private bool OrdersCoroutineBeenStartToday;
+
+    E_OrderBookUI orderBook;
 
     public static List<E_OrdersDescription> ordersList = new List<E_OrdersDescription>();
 
@@ -58,26 +77,81 @@ public class E_OrderingLogic : MonoBehaviour
         "Pleased to meet you, young craftsman. I will go straight to the point. I am no master of wielding any weapon, but books wont save me from a swing of a sword or an axe. With thus being said, I look for a weapon to begin with. Here, take this. Description conveys my general desires regarding the weapon"
     };
 
-    private string[] weaponTypes = { "Sword", "Spear", "Battle Axe", "Dagger" };
-    private string[] materials = { "Bronze", "Brass", "Iron", "Steel" }; //Brass - латунь
+    private string[] weaponTypes = { "Sword"};
+    private string[] materials = { "Bronze", "Silver", "Gold"}; //Brass - латунь
 
     private void Awake()
     {
-        ordersList = FileHandler.ReadListFromJSON<E_OrdersDescription>(dataFilename);
+        try
+        {
+            ordersList = FileHandler.ReadListFromJSON<E_OrdersDescription>(dataFilename);
+
+            currentNumOfSimultaneousOrders = ordersList.Last().currentNumberOfOrders;
+        }
+        catch { }
     }
 
     private void Start()
     {
+        orderBook = GetComponent<E_OrderBookUI>();
+
+        E_EventBus.NewDay += NewDay;
+        E_EventBus.PlayerInteractedWithCustomer += NewDialogue;
+
         E_EventBus.LoadSavedData?.Invoke();
     }
 
-    public void NewCustomerOrder() // Calls all functions needed to choose weapon type, budget and dialogue, after that transfers data into text window in the game scene
+    private void Update()
+    {
+        if (CanWeStartNewOrder() == true && OrdersCoroutineBeenStartToday == false)
+        {
+            StartCoroutine(GenerateOrders());
+            OrdersCoroutineBeenStartToday = true;
+        }
+
+        if (CanWeStartNewOrder() == false)
+        {
+            StopCoroutine(GenerateOrders());
+        }
+    }
+
+    public void NewDialogue()
     {
         DialogueTypeChooser();
-        OrderDescriptionChooser();
-        SaveOrderDescriptionList();
-        UpdateUIText();
-        E_EventBus.NewBookOrder?.Invoke();
+
+        DialoguesText.text = finalDialogueText;
+    }
+
+
+    public void NewCustomerOrder() // Calls all functions needed to choose weapon type, budget and dialogue, after that transfers data into text window in the game scene
+    {
+        if (CanWeStartNewOrder())
+        {
+            currentDayNumOfOrders++;
+            currentNumOfSimultaneousOrders++;
+
+            OrderDescriptionChooser();
+            SaveOrderDescriptionList();
+            UpdateUIText();
+
+            orderBook.addNewOrderInBook();
+        }
+    }
+
+    public bool CanWeStartNewOrder()
+    {
+        int CurrentGameHour = TimeManager.GetCurrentTime(1);
+
+        if (CurrentGameHour > 6 && CurrentGameHour < 22 && currentDayNumOfOrders < MaxOrdersInOneGameDay)
+        {
+            if (currentNumOfSimultaneousOrders < MaxSimultaneousOrders)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        return false;
     }
 
     private void DialogueTypeChooser() // Chooses dialogue that a customer will say
@@ -104,8 +178,8 @@ public class E_OrderingLogic : MonoBehaviour
 
     private void OrderDescriptionChooser()
     {
-        weaponTypeIndexHolder = Random.Range(0, 4); // Randomly chooses weapon type
-        materialIndexHolder = Random.Range(0, 4); // Randomly chooses material for weapon
+        weaponTypeIndexHolder = Random.Range(0, 1); // Randomly chooses weapon type
+        materialIndexHolder = Random.Range(0, 3); // Randomly chooses material for weapon
 
         finalOrderWeaponType = weaponTypes[weaponTypeIndexHolder];
         finalOrderMaterial = materials[materialIndexHolder];
@@ -121,32 +195,28 @@ public class E_OrderingLogic : MonoBehaviour
 
         switch (finalOrderMaterial)
         {
-            case "Iron":
-                finalOrderBudget += 20;
-                break;
-            case "Steel":
-                finalOrderBudget += 30;
-                break;
             case "Bronze":
-                finalOrderBudget += 40;
+                finalOrderBudget += 35;
                 break;
-            case "Brass":
-                finalOrderBudget += 80;
+            case "Silver":
+                finalOrderBudget += 55;
+                break;
+            case "Gold":
+                finalOrderBudget += 85;
                 break;
         }
     }
 
     public void SaveOrderDescriptionList()
     {
-        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget));
+        ordersList.Add(new E_OrdersDescription(finalOrderMaterial, finalOrderWeaponType, finalOrderBudget, currentNumOfSimultaneousOrders));
 
         FileHandler.SaveToJSON<E_OrdersDescription>(ordersList, dataFilename);
     }
 
+
     public void UpdateUIText()
     {
-        DialoguesText.text = finalDialogueText;
-
         Weapon.text = finalOrderWeaponType;
         Material.text = finalOrderMaterial;
 
@@ -159,5 +229,31 @@ public class E_OrderingLogic : MonoBehaviour
             Budget.text = finalOrderBudget.ToString();
         }
 
+    }
+
+    private void NewDay()
+    {
+        currentDayNumOfOrders = 0;
+        OrdersCoroutineBeenStartToday = false;
+    }
+
+    IEnumerator GenerateOrders()
+    {
+        currentDayOrdersAmount = Random.Range(MinOrdersInOneGameDay, MaxOrdersInOneGameDay);
+
+        while (currentDayOrdersAmount > 0)
+        {
+            int currentHour = TimeManager.GetCurrentTime(1);
+            int newOrderInterval = Random.Range(1, 4); // Hour interval between new orders
+
+            // Wait until the current time is greater than the target time
+            yield return new WaitUntil(() => TimeManager.GetCurrentTime(1) >= currentHour + newOrderInterval);
+
+            if (CanWeStartNewOrder())
+            {
+                E_EventBus.CustomerArrival?.Invoke();
+                currentDayOrdersAmount--;
+            }
+        }
     }
 }

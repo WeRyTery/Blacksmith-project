@@ -15,11 +15,13 @@ public static class Money
     public static void AddMoney(int AmountToAdd)
     {
         CurrentMoney += AmountToAdd;
+        UpdateUI();
     }
 
     public static void SubtractMoney(int AmountToSubtract)
     {
         CurrentMoney -= AmountToSubtract;
+        UpdateUI();
     }
 
     public static bool IsMoneyEnough(int GoalReputation)
@@ -32,5 +34,10 @@ public static class Money
         {
             return true;
         }
+    }
+
+    public static void UpdateUI()
+    {
+        E_EventBus.UpdateMoneyUI?.Invoke();
     }
 }

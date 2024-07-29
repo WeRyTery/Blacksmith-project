@@ -11,7 +11,6 @@ using UnityEngine.UI;
 public class E_OrderBookUI : MonoBehaviour
 {
     [SerializeField] Canvas BookCanvas;
-    [SerializeField] Canvas Orders_Canvas;
 
     [SerializeField] ScrollRect OrderMenu;
     [SerializeField] GameObject OrderButtonPrefab;
@@ -21,6 +20,8 @@ public class E_OrderBookUI : MonoBehaviour
     // Scripts needed to finish order
     public WeaponRating weaponRatingScript;
     public E_OrderingLogic orderLogic;
+    public InventoryLoader inventoryLoader;
+
     public InventoryManager inventoryManager;
 
     private float weaponDamageState = 0;
@@ -28,7 +29,6 @@ public class E_OrderBookUI : MonoBehaviour
 
     private void Awake()
     {
-        E_EventBus.NewBookOrder += addNewOrderInBook;
         E_EventBus.LoadSavedData += loadExistingOrders;
     }
 
@@ -36,7 +36,9 @@ public class E_OrderBookUI : MonoBehaviour
     {
         weaponRatingScript = gameObject.GetComponent<WeaponRating>();
         orderLogic = gameObject.GetComponent<E_OrderingLogic>();
-        inventoryManager = gameObject.GetComponent<InventoryManager>();
+        inventoryLoader = gameObject.GetComponent<InventoryLoader>();
+
+        inventoryManager = inventoryLoader.GetInventory();
     }
 
     private void Update()
@@ -51,7 +53,6 @@ public class E_OrderBookUI : MonoBehaviour
                 if (hit.transform.CompareTag("Book"))
                 {
                     BookCanvas.gameObject.SetActive(true);
-                    Orders_Canvas.gameObject.SetActive(false); // To avoid UI object conflicts between canvases
                 }
             }
         }
@@ -80,7 +81,6 @@ public class E_OrderBookUI : MonoBehaviour
     public void CloseOrdersBook()
     {
         BookCanvas.gameObject.SetActive(false);
-        Orders_Canvas.gameObject.SetActive(true);
     }
 
     public void addNewOrderInBook()
@@ -109,7 +109,8 @@ public class E_OrderBookUI : MonoBehaviour
         if (finishedWeapon != null)
         {
             weaponDamageState = finishedWeapon.DamagedState;
-
+            inventoryManager.RemoveItem(finishedWeapon);
+            orderLogic.currentNumOfSimultaneousOrders--;
         }
         else
         {
@@ -132,8 +133,6 @@ public class E_OrderBookUI : MonoBehaviour
         {
             if (button.GetOrderIndex() == OrdersIndex)
             {
-                Debug.Log(button.GetOrderIndex());
-
                 Destroy(button.gameObject);
                 orderLogic.UpdateUIText();
 
@@ -149,7 +148,6 @@ public class E_OrderBookUI : MonoBehaviour
             {
                 if (button.GetOrderIndex() > OrdersIndex)
                 {
-                    Debug.Log("Changed " + button.GetOrderIndex() + " to: " + (button.GetOrderIndex() - 1));
                     button.SetOrderIndex(button.GetOrderIndex() - 1);
                 }
             }
