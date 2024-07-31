@@ -23,12 +23,14 @@ public class SharpeningLogic : MonoBehaviour
     {
         if (!SharpeningStarted && SharpenedAmount < SharpenedAmountLimit)
         {
+            ControlOfMechanic.Sharpness += AmountForEachSharpeningCycle;
             SharpenedAmount += AmountForEachSharpeningCycle;
             SharpeningStarted = true;
             StartCoroutine("SharpeningCoolDown");
         }
         else if(SharpenedAmount >= SharpenedAmountLimit && !SharpeningStarted)
         {
+            ControlOfMechanic.Damage++;
             SharpeningStarted = true;
             StartCoroutine("SharpeningCoolDown");
         }

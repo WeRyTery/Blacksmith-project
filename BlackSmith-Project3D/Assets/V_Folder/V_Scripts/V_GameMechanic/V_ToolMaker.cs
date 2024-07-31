@@ -26,6 +26,8 @@ public class V_ToolMaker : MonoBehaviour
 
     [Header("Damege Settings")]
     public int DamageOverall;
+    [Header("Damege Settings")]
+    public int Sharpness;
 
     [Header("Damege Settings")]
 
@@ -101,12 +103,12 @@ public class V_ToolMaker : MonoBehaviour
                 if (PowerOfClick <= TimeToGetDamagePerPower[i])
                 {
 
-                    DamageOverall += DamagePerPower[i];
+                    smitingCycle.Damage += DamagePerPower[i];
                     break;
                 }
                 else
                 {
-                    DamageOverall += DamageAtFinish;
+                    smitingCycle.Damage += DamageAtFinish;
                     ClicksMade += ClicksIfDamaged;
 
                     DamageHasBeenMade = true;
@@ -149,6 +151,12 @@ public class V_ToolMaker : MonoBehaviour
             DamageOverall = 0;
             CurrentLevelOfModel = 0;
             CurrentModel = 0;
+            Models[0].SetActive(false);
+            Models[1].SetActive(false);
+            Models[2].SetActive(false); 
+            Models[3].SetActive(false);
+
+
         }
     }
     IEnumerator ClickHoldTime()
