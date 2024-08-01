@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public static class E_EventBus
@@ -23,4 +24,8 @@ public static class E_EventBus
 
     public static Action UpdateMoneyUI;
     public static Action UpdateReputationUI;
+
+    ///
+
+    public static Action SaveCountableValues;
 }

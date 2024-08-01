@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -15,13 +16,13 @@ public static class Money
     public static void AddMoney(int AmountToAdd)
     {
         CurrentMoney += AmountToAdd;
-        UpdateUI();
+        UpdateUIAndSave();
     }
 
     public static void SubtractMoney(int AmountToSubtract)
     {
         CurrentMoney -= AmountToSubtract;
-        UpdateUI();
+        UpdateUIAndSave();
     }
 
     public static bool IsMoneyEnough(int GoalReputation)
@@ -36,8 +37,17 @@ public static class Money
         }
     }
 
-    public static void UpdateUI()
+    public static void LoadMoney(List<CountableDataPreset> countableDataPreset)
+    {
+        Debug.Log("Loading money: " + countableDataPreset.Last().Money);
+        CurrentMoney = countableDataPreset[countableDataPreset.Count - 1].Money;
+        UpdateUIAndSave() ;
+    }
+
+    public static void UpdateUIAndSave()
     {
         E_EventBus.UpdateMoneyUI?.Invoke();
+        
+        E_EventBus.SaveCountableValues?.Invoke();
     }
 }

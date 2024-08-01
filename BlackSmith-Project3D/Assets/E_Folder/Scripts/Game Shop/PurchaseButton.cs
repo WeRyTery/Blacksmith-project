@@ -29,7 +29,7 @@ public class PurchaseButton : MonoBehaviour
 
         if (itemName == "Bronze" || itemName == "Silver" || itemName == "Gold")
         {
-            metalToSell = new Metals(itemName, 4, 10);
+            metalToSell = new Metals(itemName, 1, 10);
         }
 
     }
@@ -41,7 +41,6 @@ public class PurchaseButton : MonoBehaviour
             Money.SubtractMoney(ObjectPrice);
 
             inventoryManager.AddItem(metalToSell);
-            inventoryManager.PrintInventory();
             return;
         }
 

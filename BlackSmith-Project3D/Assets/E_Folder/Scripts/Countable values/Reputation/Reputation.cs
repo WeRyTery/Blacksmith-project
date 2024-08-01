@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using TMPro;
 using Unity.VisualScripting;
@@ -15,13 +16,14 @@ public static class Reputation
 
     public static int GetCurrentReputation()
     {
+        
         return CurrentReputation;
     }
 
     public static void AddReputation(int AmountToAdd)
     {
         CurrentReputation += AmountToAdd;
-        UpdateUI();
+        UpdateUIAndSave();
     }
 
     public static void SubtractReputation(int AmountToSubtract)
@@ -32,7 +34,7 @@ public static class Reputation
         }
 
         CurrentReputation -= AmountToSubtract;
-        UpdateUI();
+        UpdateUIAndSave();
     }
 
     public static bool IsReputationEnough(int GoalReputation)
@@ -45,6 +47,12 @@ public static class Reputation
         {
             return true;
         }
+    }
+
+    public static void LoadReputation(List<CountableDataPreset> countableDataPresets)
+    {
+        CurrentReputation = countableDataPresets[countableDataPresets.Count - 1].Reputation;
+        UpdateUIAndSave();
     }
 
     public static void CheckWeaponRatingForReputation(float WeaponStarRating)
@@ -76,8 +84,10 @@ public static class Reputation
         }
     }
 
-    public static void UpdateUI()
+    public static void UpdateUIAndSave()
     {
         E_EventBus.UpdateReputationUI?.Invoke();
+
+        E_EventBus.SaveCountableValues?.Invoke();
     }
 }
