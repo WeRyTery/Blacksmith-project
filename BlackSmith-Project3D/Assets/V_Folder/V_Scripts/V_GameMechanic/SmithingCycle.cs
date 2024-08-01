@@ -54,30 +54,64 @@ public class SmithingCycle : MonoBehaviour
     public InventoryLoader InventoryLoader;
 
     public InventoryManager InventoryManager;
+
+    private string DesiredMaterial;
+
+
     private void Start()
     {
-        InventoryManager = InventoryLoader.GetInventory();
+        
     }
     private void Update()
     {
         string[] WeaponStats = new string[5];
         int[] WeaponTypes = new int[3];
-        if(CameraStateScript.IsSmelting == true)
+        if (CameraStateScript.IsSmelting == true)
         {
             SmeltingCanvas.SetActive(true);
             if (Instruments[0].activeSelf)
             {
                 SmeltingProgressButton.SetActive(true);
                 PlayerStarted = true;
+
+
             }
-            else if(PlayerChosedMaterial == true)
-            { 
-                SmeltingInventory.SetActive(false);
-                SmeltingProgressButton.SetActive(true);
+            else if (PlayerChosedMaterial == true)
+            {
+                if (MaterialIndex == 0)
+                {
+                    DesiredMaterial = "Gold";
+                }
+                else if (MaterialIndex == 1)
+                {
+                    DesiredMaterial = "Silver";
+                }
+                else if (MaterialIndex == 2)
+                {
+                    DesiredMaterial = "Bronze";
+                }
+
+                InventoryManager = InventoryLoader.GetInventory();
+
+                Metals choosedMetal = InventoryManager.CheckForStackableMaterials(DesiredMaterial);
+
+                if (choosedMetal != null)
+                {
+                    choosedMetal.quantity = 1;
+
+                    InventoryManager.PrintInventory();
+                    InventoryManager.RemoveItem(choosedMetal);
+                    
+
+                    SmeltingInventory.SetActive(false);
+                    SmeltingProgressButton.SetActive(true);
+                }
+
+
             }
             else
             {
-                if(SmelterStopSmelting == true)
+                if (SmelterStopSmelting == true)
                 {
                     SmeltingProgressButton.SetActive(true);
                 }
@@ -87,20 +121,27 @@ public class SmithingCycle : MonoBehaviour
                 }
             }
         }
-        else if(CameraStateScript.IsSmiting == true)
+        else if (CameraStateScript.IsSmiting == true)
         {
             SmithingCanvas.SetActive(true);
-            if(PlayerChosedMaterial == true && PlayerStarted == false)
-            { 
-                SmithingInventory.SetActive(false);
+
+            if (PlayerChosedMaterial == true && PlayerStarted == false)
+            {
+                WeaponTypes = InventoryManager.CountWeaponTypes(InventoryManager.GetWeaponsList());
+
+                if (WeaponTypes[MaterialIndex] >= 1)
+                {
+                    SmithingInventory.SetActive(false);
+                    SmithingProgressButton.SetActive(true);
+                }
+
+            }
+            else if (PlayerStarted == true && smithing.CurrentLevelOfModel == 3)
+            {
                 SmithingProgressButton.SetActive(true);
             }
-            else if(PlayerStarted == true && smithing.CurrentLevelOfModel == 3)
-            { 
-                SmithingProgressButton.SetActive(true);
-            }
-            else if(PlayerStarted == true && smithing.CurrentLevelOfModel != 3)
-            { 
+            else if (PlayerStarted == true && smithing.CurrentLevelOfModel != 3)
+            {
                 SmithingProgressButton.SetActive(false);
             }
             else
@@ -113,14 +154,20 @@ public class SmithingCycle : MonoBehaviour
 
             }
 
+
+
         }
-        else if(CameraStateScript.IsSharpening == true)
+        else if (CameraStateScript.IsSharpening == true)
         {
             SharpeningCanvas.SetActive(true);
             if (PlayerChosedMaterial == true && PlayerStarted == false)
             {
-                SharpeningInventory.SetActive(false);
-                SharpeningProgressButton.SetActive(true);
+                if (InventoryManager.GetWeaponsList()[MaterialIndex] != null)
+                {
+                    SharpeningInventory.SetActive(false);
+                    SharpeningProgressButton.SetActive(true);
+                }
+
             }
             else if (PlayerStarted == true && Sharpness > 0)
             {
@@ -133,11 +180,11 @@ public class SmithingCycle : MonoBehaviour
             else
             {
                 WeaponStats = InventoryManager.WriteStatsOfWeapon();
-                TextSharpening[0].text =WeaponStats[0];
-                TextSharpening[1].text =WeaponStats[1];
-                TextSharpening[2].text =WeaponStats[2];
-                TextSharpening[3].text =WeaponStats[3];
-                TextSharpening[4].text =WeaponStats[4];
+                TextSharpening[0].text = WeaponStats[0];
+                TextSharpening[1].text = WeaponStats[1];
+                TextSharpening[2].text = WeaponStats[2];
+                TextSharpening[3].text = WeaponStats[3];
+                TextSharpening[4].text = WeaponStats[4];
 
 
                 SharpeningInventory.SetActive(true);
@@ -159,10 +206,10 @@ public class SmithingCycle : MonoBehaviour
     {
         PlayerChosedMaterial = true;
         MaterialIndex = Index;
-    } 
+    }
     public void ProgressButtonSmelting()
     {
-        if(PlayerStarted == false && SmelterStopSmelting == false)
+        if (PlayerStarted == false && SmelterStopSmelting == false)
         {
             Smelting.enabled = true;
             PlayerStarted = true;
@@ -170,21 +217,21 @@ public class SmithingCycle : MonoBehaviour
         }
         else
         {
-            if(SmelterStopSmelting == true || PlayerStarted == true)
+            if (SmelterStopSmelting == true || PlayerStarted == true)
             {
                 PlayerChosedMaterial = false;
                 SmeltingProgressButton.SetActive(false);
                 NewWeapon Sword = InventoryManager.CreateNewWeapon();
-                switch (MaterialIndex) 
+                switch (MaterialIndex)
                 {
                     case 0:
-                    Sword.Material = "Bronze";
+                        Sword.Material = "Gold";
                         break;
                     case 1:
-                    Sword.Material = "Silver";
+                        Sword.Material = "Silver";
                         break;
                     case 2:
-                    Sword.Material = "Gold";
+                        Sword.Material = "Bronze";
                         break;
                 }
 
@@ -198,7 +245,7 @@ public class SmithingCycle : MonoBehaviour
                     Smelting.enabled = false;
                     InventoryManager.PrintInventory();
                 }
-                else if(InventoryManager.CheckForSpaceInInventory() == false && SmelterStopSmelting == false)
+                else if (InventoryManager.CheckForSpaceInInventory() == false && SmelterStopSmelting == false)
                 {
                     StartCoroutine("HoldDownTextNoSpace");
                     E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
@@ -225,7 +272,7 @@ public class SmithingCycle : MonoBehaviour
         {
             if (MaterialIndex == 0)
             {
-                WeaponToDestroy.Material = "Bronze";
+                WeaponToDestroy.Material = "Gold";
             }
             else if (MaterialIndex == 1)
             {
@@ -233,7 +280,7 @@ public class SmithingCycle : MonoBehaviour
             }
             else if (MaterialIndex == 2)
             {
-                WeaponToDestroy.Material = "Gold";
+                WeaponToDestroy.Material = "Bronze";
             }
             WeaponToDestroy.ItemName = "Sword";
             WeaponToDestroy.Stage = 0;
@@ -248,7 +295,7 @@ public class SmithingCycle : MonoBehaviour
 
             MainSword.SetActive(true);
             MainSword.transform.position = Positions[1].transform.position;
-            MainSword.transform.rotation = Quaternion.Euler(0,180,0);
+            MainSword.transform.rotation = Quaternion.Euler(0, 180, 0);
             PlayerStarted = true;
 
             smithing.enabled = true;
@@ -257,7 +304,7 @@ public class SmithingCycle : MonoBehaviour
         {
             if (MaterialIndex == 0)
             {
-                WeaponToAdd.Material = "Bronze";
+                WeaponToAdd.Material = "Gold";
             }
             else if (MaterialIndex == 1)
             {
@@ -265,7 +312,7 @@ public class SmithingCycle : MonoBehaviour
             }
             else if (MaterialIndex == 2)
             {
-                WeaponToAdd.Material = "Gold";
+                WeaponToAdd.Material = "Bronze";
             }
             WeaponToAdd.ItemName = "Sword";
 
@@ -284,15 +331,24 @@ public class SmithingCycle : MonoBehaviour
 
             smithing.enabled = false;
             InventoryManager.AddItem(WeaponToAdd);
-            InventoryManager.PrintInventory();
+
+            smithing.ClicksMade = 0;
+            smithing.DamageOverall = 0;
+            smithing.CurrentLevelOfModel = 0;
+            smithing.CurrentModel = 0;
+            smithing.Models[0].SetActive(false);
+            smithing.Models[1].SetActive(false);
+            smithing.Models[2].SetActive(false);
+            smithing.Models[3].SetActive(false);
         }
-    }public void ProgressButtonSharpening()
+    }
+    public void ProgressButtonSharpening()
     {
         NewWeapon WeaponToDestroy = InventoryManager.CreateNewWeapon();
         NewWeapon WeaponToAdd = InventoryManager.CreateNewWeapon();
         if (PlayerStarted == false)
         {
-            switch (MaterialIndex) 
+            switch (MaterialIndex)
             {
                 case 0:
                     WeaponToDestroy.Index = 0;
@@ -343,7 +399,7 @@ public class SmithingCycle : MonoBehaviour
             InventoryManager.PrintInventory();
         }
     }
-    IEnumerator HoldDownTextNoSpace() 
+    IEnumerator HoldDownTextNoSpace()
     {
         TextNoSpace.SetActive(true);
         yield return new WaitForSeconds(TimeForText);

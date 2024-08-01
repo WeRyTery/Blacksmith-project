@@ -8,14 +8,14 @@ public class V_ToolMaker : MonoBehaviour
 {
     [Header("Model Settings")]
     [SerializeField] private GameObject SwordColliderHolder;
-    [SerializeField] private GameObject[] Models;
+    [SerializeField] public GameObject[] Models;
     [SerializeField] private int[] LevelToChangeModel;
     public int CurrentLevelOfModel;
-    [SerializeField] private int CurrentModel;
+    [SerializeField] public int CurrentModel;
     [Space]
 
     [Header("ClickSettings")]
-    [SerializeField] private int ClicksMade;
+    [SerializeField] public int ClicksMade;
     [SerializeField] private int[] ClicksAmountPerPower;
     [SerializeField] private float[] TimeForClickPower;
     [SerializeField] private int ClicksIfDamaged;
@@ -61,8 +61,8 @@ public class V_ToolMaker : MonoBehaviour
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        Physics.Raycast(ray, out hit, 100.0f); 
-        
+        Physics.Raycast(ray, out hit, 100.0f);
+
 
         if (Input.GetMouseButtonDown(0) && AlreadyClicked == false && hit.collider == swordCollider)
         {
@@ -100,21 +100,25 @@ public class V_ToolMaker : MonoBehaviour
         {
             for (int i = 0; i < TimeToGetDamagePerPower.Length; i++)
             {
-                if (PowerOfClick <= TimeToGetDamagePerPower[i])
+                if (CurrentLevelOfModel < 3)
                 {
+                    if (PowerOfClick <= TimeToGetDamagePerPower[i])
+                    {
 
-                    smitingCycle.Damage += DamagePerPower[i];
-                    break;
+                        smitingCycle.Damage += DamagePerPower[i];
+                        break;
+                    }
+                    else
+                    {
+                        smitingCycle.Damage += DamageAtFinish;
+                        ClicksMade += ClicksIfDamaged;
+
+                        DamageHasBeenMade = true;
+
+                        break;
+                    }
                 }
-                else
-                {
-                    smitingCycle.Damage += DamageAtFinish;
-                    ClicksMade += ClicksIfDamaged;
 
-                    DamageHasBeenMade = true;
-
-                    break;
-                }
             }
             if (!DamageHasBeenMade)
             {
@@ -123,10 +127,10 @@ public class V_ToolMaker : MonoBehaviour
             DamageHasBeenMade = false;
         }
 
-        
+
         else if (LevelToChangeModel.Length > CurrentLevelOfModel)
         {
-            if(ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
+            if (ClicksMade >= LevelToChangeModel[CurrentLevelOfModel])
             {
                 Debug.Log("Checkpoint");
                 Models[CurrentModel].SetActive(false);
@@ -144,19 +148,6 @@ public class V_ToolMaker : MonoBehaviour
                 ClicksMade = 0;
                 Debug.Log("Reseted");
             }
-        }
-        else
-        {
-            ClicksMade = 0;
-            DamageOverall = 0;
-            CurrentLevelOfModel = 0;
-            CurrentModel = 0;
-            Models[0].SetActive(false);
-            Models[1].SetActive(false);
-            Models[2].SetActive(false); 
-            Models[3].SetActive(false);
-
-
         }
     }
     IEnumerator ClickHoldTime()

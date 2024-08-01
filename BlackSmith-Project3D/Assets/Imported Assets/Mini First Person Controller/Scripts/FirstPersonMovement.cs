@@ -38,7 +38,7 @@ public class FirstPersonMovement : MonoBehaviour
         
         if (!Mathf.Approximately(rb.velocity.magnitude, 0)) //When speed == ~0, character wont turn away and face static position
         {
-            transform.forward = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            transform.forward = new Vector3(rb.velocity.x, 0, rb.velocity.z);   
         }
     }
 }

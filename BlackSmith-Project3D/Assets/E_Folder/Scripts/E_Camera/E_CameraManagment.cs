@@ -46,12 +46,11 @@ public class E_CameraManagment : MonoBehaviour
 
     private string LayerMaskName; // Name of the mask that SHOULD be INGORED by main camera
 
-    private FirstPersonMovement playerMovementScript;
+    [SerializeField] GameObject gamePlayer;
 
     private void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
-        playerMovementScript = Player.gameObject.GetComponent<FirstPersonMovement>();
 
         IsTransitionCanvasEnabled(false);
         defaultPlayerConstraints = Player.GetComponent<Rigidbody>().constraints;
@@ -183,7 +182,7 @@ public class E_CameraManagment : MonoBehaviour
         switch (DoWeFreezePlayerMovement)
         {
             case true:
-                playerMovementScript.enabled = false;
+                gamePlayer.SetActive(false);
                 break;
         }
 
@@ -292,7 +291,7 @@ public class E_CameraManagment : MonoBehaviour
         IsSmelting = false;
         IsSmiting = false;
         IsSharpening = false;
-        playerMovementScript.enabled = true;
+        gamePlayer.SetActive(true);
         StartCoroutine(ChangeCurrentCamera(SmitheryCamera));
     }
 }

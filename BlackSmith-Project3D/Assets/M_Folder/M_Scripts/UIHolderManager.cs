@@ -7,12 +7,19 @@ public class UIHolderManager : MonoBehaviour
 {
     public GameObject HolderPanel;
     public GameObject ShowHolderPanel;
+    public GameObject ShopCanvas;
     
     public void ShowPanel()
     {
         HolderPanel.SetActive(!HolderPanel.active);
         ShowHolderPanel.SetActive(!ShowHolderPanel.active);
     }
+
+    public void OpenShop()
+    {
+        ShopCanvas.SetActive(true);
+    }
+
     public void ClosePanel()
     {
         if (ShowHolderPanel != null)

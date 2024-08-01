@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.Services.Analytics;
 using UnityEngine;
 using static UnityEngine.Rendering.PostProcessing.SubpixelMorphologicalAntialiasing;
 
@@ -85,22 +86,31 @@ public class InventoryManager : MonoBehaviour
 
         foreach (var existingItem in inventory)
         {
-            if (existingItem.ItemName == item.ItemName && ((dynamic)existingItem).quantity < _maxStackSize)
+            if (existingItem != null)
             {
-                int addableQuantity = Mathf.Min(_maxStackSize - ((dynamic)existingItem).quantity, ((dynamic)item).quantity);
-                ((dynamic)existingItem).quantity += addableQuantity;
-                ((dynamic)item).quantity -= addableQuantity;
-                Debug.Log("Added " + addableQuantity + " to existing stack of " + item.ItemName);
+                if (existingItem.ItemName == item.ItemName && ((dynamic)existingItem).quantity < _maxStackSize)
+                {
+                    int addableQuantity = 1;
 
-                if (((dynamic)item).quantity <= 0) return;
+                    int newIndex = existingItem.Index;
+                    _metals[newIndex].quantity += addableQuantity;
+
+                    ((dynamic)item).quantity -= addableQuantity;
+
+                    Debug.Log("Added " + addableQuantity + " to existing stack of " + item.ItemName);
+                    Debug.Log("Current amount of items " + ((dynamic)existingItem).quantity);
+                    Debug.Log("Metals new index qnt " + _metals[newIndex].quantity);
+
+                    if (((dynamic)item).quantity <= 0) return;
+                }
             }
+
         }
 
         //adds a number of stackable items to a new slot
 
         while (((dynamic)item).quantity > 0)
         {
-
             int emptySlotIndex = CheckForEmptySlot(inventory);
 
             if (inventory.Count < _maxSlots)
@@ -129,7 +139,7 @@ public class InventoryManager : MonoBehaviour
                     ((dynamic)item).quantity = 0;
                     CheckForItemTypeToAdd(item);
 
-                    Debug.Log("Added new stack of " + ((dynamic)item).quantity + " " + item.ItemName);
+                    Debug.Log("Added new stack of " + ((dynamic)newItem).quantity + " " + newItem.ItemName);
                 }
             }
             else if (emptySlotIndex != 10)
@@ -193,28 +203,43 @@ public class InventoryManager : MonoBehaviour
         int totalAvailableToRemove = 0;
         foreach (var existingItem in inventory)
         {
-            if (existingItem.ItemName == item.ItemName)
+            if (existingItem != null)
             {
-                totalAvailableToRemove += ((dynamic)existingItem).quantity;
+                if (existingItem.ItemName == item.ItemName)
+                {
+                    totalAvailableToRemove += ((dynamic)existingItem).quantity;
+                }
             }
+
         }
         if (totalAvailableToRemove >= ((dynamic)item).quantity)
         {
             foreach (var existingItem in inventory)
             {
-                //finding out how much to remove by taking the smaller number
-                int removableQuantity = Mathf.Min(((dynamic)existingItem).quantity, ((dynamic)item).quantity);
-                ((dynamic)existingItem).quantity -= removableQuantity;
-                ((dynamic)item).quantity -= removableQuantity;
-                Debug.Log("Removed " + removableQuantity + " of " + item.ItemName);
-
-                if (((dynamic)existingItem).quantity <= 0)
+                if (existingItem != null)
                 {
-                    inventory[existingItem.Index] = null;
-                    Debug.Log(item.ItemName + " stack is empty and removed from _inventory");
+                    //finding out how much to remove by taking the smaller number
+                    int removableQuantity = 1;
+                    int newIndex = existingItem.Index;
+                    _metals[newIndex].quantity -= removableQuantity;
+                    int temp = ((dynamic)item).quantity;
+                    temp = 0;
+
+                    Debug.Log("Removed " + removableQuantity + " of " + item.ItemName);
+                    Debug.Log("remaining items " + _metals[newIndex].quantity);
+
+                    if (_metals[newIndex].quantity <= 0)
+                    {
+                        inventory[existingItem.Index] = null;
+                        Debug.Log(item.ItemName + " stack is empty and removed from _inventory");
+                    }
+
+                    if (temp <= 0)
+                    {
+                        return;
+                    }
                 }
 
-                if (((dynamic)item).quantity <= 0) return;
             }
         }
 
@@ -322,7 +347,11 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Materials:");
         foreach (var material in _metals)
         {
-            Debug.Log(material.ItemName + " - Quantity: " + material.quantity + " " + material.Index);
+            if (material != null)
+            {
+                Debug.Log(material.ItemName + " - Quantity: " + material.quantity + " " + material.Index);
+            }
+
         }
 
         Debug.Log("Handles:");
@@ -384,5 +413,21 @@ public class InventoryManager : MonoBehaviour
             i++;
         }
         return Stats;
+    }
+
+    public Metals CheckForStackableMaterials(string materialName)
+    {
+        foreach (var material in _metals)
+        {
+            if (material != null)
+            {
+                if (material.ItemName == materialName)
+                {
+                    return material;
+                }
+            }
+        }
+
+        return null;
     }
 }

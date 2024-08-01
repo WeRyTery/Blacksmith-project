@@ -10,4 +10,10 @@ public class UI : MonoBehaviour
     {
         Canvas.SetActive(false);
     }
+    
+    public void OpenCanvas()
+    {
+        Canvas.SetActive(true);
+    }
+
 }
