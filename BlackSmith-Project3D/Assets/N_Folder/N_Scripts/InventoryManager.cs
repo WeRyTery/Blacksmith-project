@@ -279,6 +279,23 @@ public class InventoryManager : MonoBehaviour
 
         return null;
     }
+    public NewWeapon WeaponSharpeningCheck(NewWeapon readyWeapon)
+    {
+        foreach (var weapon in _newWeapons)
+        {
+            if (weapon != null)
+            {
+                if (weapon.Index == readyWeapon.Index
+                                // weapon.Material == readyWeapon.Material
+                                )
+                {
+                    return weapon;
+                }
+            }
+        }
+
+        return null;
+    }
     public List<NewWeapon> GetWeaponsList()
     {
         return _newWeapons;
@@ -298,7 +315,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (newWeapon != null)
             {
-                Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.DamagedState + " - Number: " + newWeapon.Material + " " + newWeapon.Index + " Stage: " + newWeapon.Stage);
+                Debug.Log(newWeapon.ItemName + " - Damage: " + newWeapon.DamagedState + " - Number: " + newWeapon.Material + " " + newWeapon.Index + " Stage: " + newWeapon.Stage + " Sharpness: " + newWeapon.Sharpness);
             }
         }
 
@@ -346,5 +363,26 @@ public class InventoryManager : MonoBehaviour
             }
         }
         return new int[3] { countGold, countSilver, countBronze };
+    }
+    public string[] WriteStatsOfWeapon()
+    {
+        int i = 0;
+        string[] Stats = new string[5];
+        foreach (NewWeapon weapon in _newWeapons)
+        {
+            if (weapon != null)
+            {
+                if (weapon.Stage == 4)
+                {
+
+                    Stats[i] = $"Damage: {weapon.DamagedState} " +
+                            $"Stage: {weapon.Stage} " +
+                            $"Material: {weapon.Material} ";
+
+                }
+            }
+            i++;
+        }
+        return Stats;
     }
 }

@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 using TMPro;
 using System.Linq;
+using System;
 
 public class SmithingCycle : MonoBehaviour
 {
@@ -17,12 +18,19 @@ public class SmithingCycle : MonoBehaviour
     [SerializeField] private GameObject SmithingCanvas;
     [SerializeField] private GameObject SmithingProgressButton;
     [SerializeField] private GameObject SmithingInventory;
-    [SerializeField] private TextMeshProUGUI[] TextAmounts = new TextMeshProUGUI[3];
+    [SerializeField] private TextMeshProUGUI[] TextAmountsSmithing = new TextMeshProUGUI[3];
+    [Space]
+    [SerializeField] private GameObject SharpeningCanvas;
+    [SerializeField] private GameObject SharpeningProgressButton;
+    [SerializeField] private GameObject SharpeningInventory;
+    [SerializeField] private TextMeshProUGUI[] TextSharpening = new TextMeshProUGUI[5];
     [Space]
     [SerializeField] private GameObject TextNoSpace;
     [Header("Other Variables")]
     [SerializeField] private float TimeForText;
     public bool SmelterStopSmelting = false;
+    public int Sharpness;
+    public int Damage;
     [Header("Scripts")]
     public V_ToolMaker smithing;
     public ControlsForSharpening sharpening;
@@ -38,6 +46,7 @@ public class SmithingCycle : MonoBehaviour
 
     [Header("ObjectsForDisplay")]
     public GameObject MainSword;
+    public GameObject SharpeningSword;
     public GameObject MaterialGameObject;
     public GameObject[] Instruments = new GameObject[2];
     public Material[] MaterialsC = new Material[3];
@@ -51,7 +60,7 @@ public class SmithingCycle : MonoBehaviour
     }
     private void Update()
     {
-
+        string[] WeaponStats = new string[5];
         int[] WeaponTypes = new int[3];
         if(CameraStateScript.IsSmelting == true)
         {
@@ -68,7 +77,14 @@ public class SmithingCycle : MonoBehaviour
             }
             else
             {
-                SmeltingInventory.SetActive(true);
+                if(SmelterStopSmelting == true)
+                {
+                    SmeltingProgressButton.SetActive(true);
+                }
+                else
+                {
+                    SmeltingInventory.SetActive(true);
+                }
             }
         }
         else if(CameraStateScript.IsSmiting == true)
@@ -90,10 +106,41 @@ public class SmithingCycle : MonoBehaviour
             else
             {
                 WeaponTypes = InventoryManager.CountWeaponTypes(InventoryManager.GetWeaponsList());
-                TextAmounts[0].text = $"Amount: {WeaponTypes[0]}";
-                TextAmounts[1].text = $"Amount: {WeaponTypes[1]}";
-                TextAmounts[2].text = $"Amount: {WeaponTypes[2]}";
+                TextAmountsSmithing[0].text = $"Amount: {WeaponTypes[0]}";
+                TextAmountsSmithing[1].text = $"Amount: {WeaponTypes[1]}";
+                TextAmountsSmithing[2].text = $"Amount: {WeaponTypes[2]}";
                 SmithingInventory.SetActive(true);
+
+            }
+
+        }
+        else if(CameraStateScript.IsSharpening == true)
+        {
+            SharpeningCanvas.SetActive(true);
+            if (PlayerChosedMaterial == true && PlayerStarted == false)
+            {
+                SharpeningInventory.SetActive(false);
+                SharpeningProgressButton.SetActive(true);
+            }
+            else if (PlayerStarted == true && Sharpness > 0)
+            {
+                SharpeningProgressButton.SetActive(true);
+            }
+            else if (PlayerStarted == true && Sharpness == 0)
+            {
+                SharpeningProgressButton.SetActive(true);
+            }
+            else
+            {
+                WeaponStats = InventoryManager.WriteStatsOfWeapon();
+                TextSharpening[0].text =WeaponStats[0];
+                TextSharpening[1].text =WeaponStats[1];
+                TextSharpening[2].text =WeaponStats[2];
+                TextSharpening[3].text =WeaponStats[3];
+                TextSharpening[4].text =WeaponStats[4];
+
+
+                SharpeningInventory.SetActive(true);
 
             }
 
@@ -115,7 +162,7 @@ public class SmithingCycle : MonoBehaviour
     } 
     public void ProgressButtonSmelting()
     {
-        if(PlayerStarted == false)
+        if(PlayerStarted == false && SmelterStopSmelting == false)
         {
             Smelting.enabled = true;
             PlayerStarted = true;
@@ -236,6 +283,62 @@ public class SmithingCycle : MonoBehaviour
 
 
             smithing.enabled = false;
+            InventoryManager.AddItem(WeaponToAdd);
+            InventoryManager.PrintInventory();
+        }
+    }public void ProgressButtonSharpening()
+    {
+        NewWeapon WeaponToDestroy = InventoryManager.CreateNewWeapon();
+        NewWeapon WeaponToAdd = InventoryManager.CreateNewWeapon();
+        if (PlayerStarted == false)
+        {
+            switch (MaterialIndex) 
+            {
+                case 0:
+                    WeaponToDestroy.Index = 0;
+                    break;
+                case 1:
+                    WeaponToDestroy.Index = 1;
+                    break;
+                case 2:
+                    WeaponToDestroy.Index = 2;
+                    break;
+                case 3:
+                    WeaponToDestroy.Index = 3;
+                    break;
+                case 4:
+                    WeaponToDestroy.Index = 4;
+                    break;
+            }
+
+            InventoryManager.PrintInventory();
+
+            WeaponToDestroy = InventoryManager.WeaponSharpeningCheck(WeaponToDestroy);
+            WeaponToAdd.Material = WeaponToDestroy.Material;
+            InventoryManager.RemoveItem(WeaponToDestroy);
+            InventoryManager.PrintInventory();
+
+            SharpeningSword.SetActive(true);
+            PlayerStarted = true;
+
+            sharpening.enabled = true;
+        }
+        else
+        {
+
+            PlayerChosedMaterial = false;
+            SharpeningProgressButton.SetActive(false);
+
+            SharpeningSword.SetActive(false);
+            E_EventBus.ResetUXafterSmithingMechanic?.Invoke();
+            PlayerStarted = false;
+
+            WeaponToAdd.ItemName = "Sword";
+            WeaponToAdd.DamagedState = smithing.DamageOverall;
+            WeaponToAdd.Sharpness = smithing.Sharpness;
+            WeaponToAdd.Stage = 4;
+
+            sharpening.enabled = false;
             InventoryManager.AddItem(WeaponToAdd);
             InventoryManager.PrintInventory();
         }
